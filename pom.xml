@@ -16,6 +16,8 @@
         <module>infrastructure/service_registry</module>
         <!-- Business Services -->
         <module>services/member_identification</module>
+        <!-- Common DTO Module -->
+        <module>common/dtos</module>
     </modules>
 
 </project>

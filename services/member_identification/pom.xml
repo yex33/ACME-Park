@@ -11,7 +11,7 @@
 	<groupId>ca.mcmaster.cas735.ACMEpark</groupId>
 	<artifactId>member_identification</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>member_identification</name>
+	<name>Member Identification Service</name>
 	<description>member_identification</description>
 	<url/>
 	<licenses>
@@ -62,6 +62,12 @@
 			<groupId>org.springframework.amqp</groupId>
 			<artifactId>spring-rabbit-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>ca.mcmaster.cas735.ACMEpark</groupId>
+			<artifactId>dtos</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 
