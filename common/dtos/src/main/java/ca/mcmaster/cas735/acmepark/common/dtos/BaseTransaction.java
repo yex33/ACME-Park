@@ -22,11 +22,14 @@ public abstract class BaseTransaction {
     // The timestamp when the transaction was initiated
     public LocalDateTime timestamp;
 
-    // The amount involved in the transaction
-    public Double amount;
+    // The amount involved in the transaction, measured in cent, e.g. 2000 is equal to 20.00 dollar
+    public int amount;
 
     // ID of the user or entity initiating the transaction
     public String initiatedBy;
+
+    // The user type of the initiator
+    public UserType userType;
 
     // Description or purpose of the transaction
     public String description;
