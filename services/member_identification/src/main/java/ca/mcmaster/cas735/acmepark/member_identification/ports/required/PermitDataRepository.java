@@ -8,4 +8,7 @@ import java.util.List;
 public interface PermitDataRepository extends JpaRepository<Permit, String> {
     List<Permit> findAll();
     Boolean existsByOrganizationId(String organizationId);
+    Permit findPermitByTransponderId(String transponderId);
+    Permit findPermitByPermitId(String permitId);
+    void updatePermitByPermitId(String permitId, Permit permit);
 }

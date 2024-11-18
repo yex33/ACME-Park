@@ -16,4 +16,5 @@ public class MemberFeeCreationData {
     private int amount;
     private LocalDateTime timestamp;
     private String description;
+    private String associatedPermitId;
 }

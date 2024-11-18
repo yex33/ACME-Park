@@ -4,5 +4,6 @@ import ca.mcmaster.cas735.acmepark.member_identification.business.entities.Membe
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MemberFeeTransactionRepository extends JpaRepository<MemberFeeTransaction, String> {
-
+    MemberFeeTransaction findByTransactionId(String transactionId);
+    void updateMemberFeeTransactionByTransactionId(String transactionId, MemberFeeTransaction memberFeeTransaction);
 }

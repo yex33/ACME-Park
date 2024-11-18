@@ -26,4 +26,15 @@ public class Permit {
 
     private LocalDate startDate;
     private LocalDate expiryDate;
+
+    // The valued is true means the payment has processed and the transponder has been published
+    private Boolean processed;
+
+    public final Boolean isExpired() {
+        if (expiryDate.isBefore(LocalDate.now())) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

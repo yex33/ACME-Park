@@ -37,7 +37,4 @@ public class PermitController {
     public void create(@RequestBody PermitCreationData data) {
         return;
     }
-
-
-
 }

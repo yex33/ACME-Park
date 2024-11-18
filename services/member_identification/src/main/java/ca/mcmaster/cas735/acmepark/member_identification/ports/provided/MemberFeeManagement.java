@@ -5,4 +5,5 @@ import ca.mcmaster.cas735.acmepark.member_identification.dto.MemberFeeCreationDa
 
 public interface MemberFeeManagement {
     MemberFeeTransaction createTransaction(MemberFeeCreationData request);
+    void completeTransaction(String transactionId);
 }
