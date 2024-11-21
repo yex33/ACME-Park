@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 public class FineSender implements IssueUserFineSender {
 
     @Override
-    public void sendApproval(IssueUserFine approval) {
-
+    public void sendFine(IssueUserFine fineRequest) {
     }
 }

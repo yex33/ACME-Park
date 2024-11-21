@@ -2,6 +2,7 @@ package ca.mcmaster.cas735.acmepark.lot_management;
 
 import ca.mcmaster.cas735.acmepark.lot_management.business.RecordManager;
 import ca.mcmaster.cas735.acmepark.lot_management.business.entities.EntryRecords;
+import ca.mcmaster.cas735.acmepark.lot_management.dtos.IssueVehicleFine;
 import ca.mcmaster.cas735.acmepark.lot_management.port.required.RecordDataRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +25,9 @@ public class RecordManagerTest {
     void test_FindRecord_thenReturnUser() {
         String license = "squeeze";
         Integer fine = 50000;
+        IssueVehicleFine request = new IssueVehicleFine(license, fine);
 
-        manager.findRecord(license, fine);
+        manager.findRecord(request);
 
         Optional<EntryRecords> result = database.findByLicensePlate(license);
         assertThat(result).isPresent();

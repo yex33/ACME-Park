@@ -3,7 +3,8 @@ package ca.mcmaster.cas735.acmepark.lot_management.business;
 import ca.mcmaster.cas735.acmepark.lot_management.business.entities.EntryRecords;
 import ca.mcmaster.cas735.acmepark.lot_management.business.errors.RecordNotFoundException;
 import ca.mcmaster.cas735.acmepark.lot_management.dtos.IssueUserFine;
-import ca.mcmaster.cas735.acmepark.lot_management.port.provided.LookupUser;
+import ca.mcmaster.cas735.acmepark.lot_management.dtos.IssueVehicleFine;
+import ca.mcmaster.cas735.acmepark.lot_management.port.provided.IssueVehicleFineReceiver;
 import ca.mcmaster.cas735.acmepark.lot_management.port.required.IssueUserFineSender;
 import ca.mcmaster.cas735.acmepark.lot_management.port.required.RecordDataRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service @Slf4j
-public class RecordManager implements LookupUser {
+public class RecordManager implements IssueVehicleFineReceiver {
     private final RecordDataRepository database;
     private final IssueUserFineSender issue_sender;
 
@@ -22,17 +23,17 @@ public class RecordManager implements LookupUser {
     }
 
     @Override
-    public void findRecord(String license, Integer fine) {
-        log.info("Looking up users by {}", license);
-        Integer userId = database.findByLicensePlate(license)
+    public void findRecord(IssueVehicleFine issueRequest) {
+        log.info("Looking up users by {}", issueRequest.getLicensePlate());
+        Integer userId = database.findByLicensePlate(issueRequest.getLicensePlate())
                                 .map(EntryRecords::getUserId)
                                 .orElseThrow(() -> new RecordNotFoundException("Record not found"));
 
         log.info("Send fine to the user with ID: {}", userId);
         IssueUserFine issueUser = new IssueUserFine();
         issueUser.setUserID(userId);
-        issueUser.setFine(fine);
-        issue_sender.sendApproval(issueUser);
+        issueUser.setFine(issueRequest.getFine());
+        issue_sender.sendFine(issueUser);
         log.info("Fine sent!");
     }
 }
