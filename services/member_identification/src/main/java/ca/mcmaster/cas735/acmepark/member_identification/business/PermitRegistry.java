@@ -6,6 +6,7 @@ import ca.mcmaster.cas735.acmepark.member_identification.business.entities.Permi
 import ca.mcmaster.cas735.acmepark.member_identification.business.errors.AlreadyExistingException;
 import ca.mcmaster.cas735.acmepark.member_identification.dto.MemberFeeCreationData;
 import ca.mcmaster.cas735.acmepark.member_identification.dto.PermitCreationData;
+import ca.mcmaster.cas735.acmepark.member_identification.dto.TransponderAccessData;
 import ca.mcmaster.cas735.acmepark.member_identification.ports.provided.MemberFeeManagement;
 import ca.mcmaster.cas735.acmepark.member_identification.ports.provided.PaymentManagement;
 import ca.mcmaster.cas735.acmepark.member_identification.ports.provided.PermitManagement;
@@ -89,8 +90,8 @@ public class PermitRegistry implements PermitManagement, TransponderManagement {
     }
 
     @Override
-    public void requestGateOpen(String transponderId) {
-        Permit permit = database.findPermitByTransponderId(transponderId);
+    public void requestGateOpen(TransponderAccessData data) {
+        Permit permit = database.findPermitByTransponderId(data.getTransponderId());
 
         if (permit == null) {
             return;

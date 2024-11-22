@@ -1,6 +1,7 @@
 package ca.mcmaster.cas735.acmepark.member_identification.adapter.rest;
 
 import ca.mcmaster.cas735.acmepark.common.dtos.ParkingPermitInfo;
+import ca.mcmaster.cas735.acmepark.member_identification.business.errors.AlreadyExistingException;
 import ca.mcmaster.cas735.acmepark.member_identification.dto.PermitCreationData;
 import ca.mcmaster.cas735.acmepark.member_identification.ports.provided.PermitManagement;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,7 +35,8 @@ public class PermitController {
     @PostMapping(value = "/")
     @Operation(description = "Create or renew a parking permit in the system")
     @ResponseStatus(HttpStatus.CREATED)
-    public void create(@RequestBody PermitCreationData data) {
+    public void create(@RequestBody PermitCreationData data) throws AlreadyExistingException {
+        manager.create(data);
         return;
     }
 }
