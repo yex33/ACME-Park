@@ -5,6 +5,6 @@ import lombok.NoArgsConstructor;
 
 @Data @NoArgsConstructor
 public class IssueUserFine {
-    private Integer userID;
+    private String userID;
     private Integer fine;
 }

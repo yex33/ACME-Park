@@ -25,7 +25,7 @@ public class RecordManager implements IssueVehicleFineReceiver {
     @Override
     public void findRecord(IssueVehicleFine issueRequest) {
         log.info("Looking up users by {}", issueRequest.getLicensePlate());
-        Integer userId = database.findByLicensePlate(issueRequest.getLicensePlate())
+        String userId = database.findByLicensePlate(issueRequest.getLicensePlate())
                                 .map(EntryRecords::getUserId)
                                 .orElseThrow(() -> new RecordNotFoundException("Record not found"));
 

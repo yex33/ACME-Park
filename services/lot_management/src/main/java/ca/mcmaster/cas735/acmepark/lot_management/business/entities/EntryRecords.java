@@ -11,10 +11,8 @@ public class EntryRecords {
 
 //    @Column(nullable = false, unique = true)
     private String licensePlate;
-
 //    @Column(nullable = false, unique = true)
-    private Integer userId;
-
+    private String userId;
 //    @Column(nullable = false)
     private UserType userType;
 }
