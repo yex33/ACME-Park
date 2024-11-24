@@ -1,5 +1,6 @@
 package ca.mcmaster.cas735.acmepark.member_identification.business;
 
+import ca.mcmaster.cas735.acmepark.common.dtos.AccessGateRequest;
 import ca.mcmaster.cas735.acmepark.common.dtos.ParkingPermitInfo;
 import ca.mcmaster.cas735.acmepark.member_identification.business.entities.MemberFeeTransaction;
 import ca.mcmaster.cas735.acmepark.member_identification.business.entities.Permit;
@@ -7,10 +8,7 @@ import ca.mcmaster.cas735.acmepark.member_identification.business.errors.Already
 import ca.mcmaster.cas735.acmepark.member_identification.dto.MemberFeeCreationData;
 import ca.mcmaster.cas735.acmepark.member_identification.dto.PermitCreationData;
 import ca.mcmaster.cas735.acmepark.member_identification.dto.TransponderAccessData;
-import ca.mcmaster.cas735.acmepark.member_identification.ports.provided.MemberFeeManagement;
-import ca.mcmaster.cas735.acmepark.member_identification.ports.provided.PaymentManagement;
-import ca.mcmaster.cas735.acmepark.member_identification.ports.provided.PermitManagement;
-import ca.mcmaster.cas735.acmepark.member_identification.ports.provided.TransponderManagement;
+import ca.mcmaster.cas735.acmepark.member_identification.ports.provided.*;
 import ca.mcmaster.cas735.acmepark.member_identification.ports.required.PermitDataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,12 +24,14 @@ public class PermitRegistry implements PermitManagement, TransponderManagement {
     private final PermitDataRepository database;
     private final MemberFeeManagement feeManager;
     private final PaymentManagement paymentManager;
+    private final GateManagement gateManager;
 
     @Autowired
-    public PermitRegistry(PermitDataRepository database, MemberFeeManagement feeManager, PaymentManagement paymentManager) {
+    public PermitRegistry(PermitDataRepository database, MemberFeeManagement feeManager, PaymentManagement paymentManager, GateManagement gateManager) {
         this.database = database;
         this.feeManager = feeManager;
         this.paymentManager = paymentManager;
+        this.gateManager = gateManager;
     }
 
     @Override
@@ -98,9 +98,13 @@ public class PermitRegistry implements PermitManagement, TransponderManagement {
         }
 
         if (permit.isExpired()) {
-
+            return;
         } else {
-
+            AccessGateRequest request = new AccessGateRequest();
+            request.setGateId(data.getGateId());
+            request.setUserId(permit.getOrganizationId());
+            request.setUserType(permit.getUserType());
+            gateManager.requestGateOpen(request);
         }
     }
 

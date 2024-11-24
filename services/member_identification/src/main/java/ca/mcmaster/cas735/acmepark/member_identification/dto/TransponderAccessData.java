@@ -8,5 +8,5 @@ import lombok.NoArgsConstructor;
 public class TransponderAccessData {
     private String transponderId;
     private String licensePlate;
-    private String gateNumber;
+    private String gateId;
 }

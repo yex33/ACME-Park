@@ -37,6 +37,5 @@ public class PermitController {
     @ResponseStatus(HttpStatus.CREATED)
     public void create(@RequestBody PermitCreationData data) throws AlreadyExistingException {
         manager.create(data);
-        return;
     }
 }
