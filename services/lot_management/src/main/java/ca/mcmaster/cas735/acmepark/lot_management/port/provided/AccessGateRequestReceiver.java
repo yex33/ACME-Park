@@ -1,8 +1,7 @@
 package ca.mcmaster.cas735.acmepark.lot_management.port.provided;
 
-import org.springframework.stereotype.Component;
+import ca.mcmaster.cas735.acmepark.common.dtos.AccessGateRequest;
 
-@Component(value = "decider")
 public interface AccessGateRequestReceiver {
-    void checkRule();
+    void checkRule(AccessGateRequest accessRequest);
 }

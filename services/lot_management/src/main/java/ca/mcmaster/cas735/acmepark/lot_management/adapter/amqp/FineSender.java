@@ -26,7 +26,6 @@ public class FineSender implements IssueUserFineSender {
     public void sendFine(IssueUserFine fineRequest) {
         log.debug("Sending message to {}: {}", exchange, fineRequest);
         rabbitTemplate.convertAndSend(exchange, "*", translate(fineRequest));
-
     }
 
     private String translate(IssueUserFine fineRequest) {
@@ -39,7 +38,7 @@ public class FineSender implements IssueUserFineSender {
     }
 
     @Bean
-    public TopicExchange outbound() {
+    public TopicExchange outboundFine() {
         return new TopicExchange(exchange);
     }
 }

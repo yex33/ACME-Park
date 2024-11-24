@@ -3,11 +3,17 @@ package ca.mcmaster.cas735.acmepark.lot_management.business.entities;
 import ca.mcmaster.cas735.acmepark.common.dtos.UserType;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.UuidGenerator;
 
+@NoArgsConstructor
+@Setter
 @Entity @Data @Table(name="entry_record")
-public class EntryRecords {
+public class EntryRecord {
     @Id
-    private Integer recordId;
+    @UuidGenerator
+    private String recordId;
 
 //    @Column(nullable = false, unique = true)
     private String licensePlate;

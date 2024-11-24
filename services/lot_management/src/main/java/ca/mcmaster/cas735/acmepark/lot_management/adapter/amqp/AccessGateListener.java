@@ -1,6 +1,8 @@
 package ca.mcmaster.cas735.acmepark.lot_management.adapter.amqp;
 
+import ca.mcmaster.cas735.acmepark.common.dtos.AccessGateRequest;
 import ca.mcmaster.cas735.acmepark.lot_management.port.provided.AccessGateRequestReceiver;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.Exchange;
 import org.springframework.amqp.rabbit.annotation.Queue;
@@ -25,16 +27,16 @@ public class AccessGateListener {
             key = "*"))
     public void listen(String data){
         log.debug("Receiving ? request {}", data);
-//        PermitLookupRequest request = translate(data);
-//        finder.lookupByTransponder(request.getTransponderNumber());
+        AccessGateRequest request = translate(data);
+        decider.checkRule(request);
     }
 
-//    private PermitLookupRequest translate (String raw) {
-//        ObjectMapper mapper = new ObjectMapper();
-//        try{
-//            return mapper.readValue(raw, PermitLookupRequest.class);
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
+    private AccessGateRequest translate (String raw) {
+        ObjectMapper mapper = new ObjectMapper();
+        try{
+            return mapper.readValue(raw, AccessGateRequest.class);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

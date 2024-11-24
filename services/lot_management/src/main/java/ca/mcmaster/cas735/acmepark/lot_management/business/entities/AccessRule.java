@@ -1,14 +1,14 @@
 package ca.mcmaster.cas735.acmepark.lot_management.business.entities;
 
 import ca.mcmaster.cas735.acmepark.common.dtos.UserType;
-import lombok.Getter;
+import lombok.Data;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Getter
+@Data
 public class AccessRule {
     private final Map<String, List<UserType>> accessRule;
 
@@ -23,7 +23,6 @@ public class AccessRule {
         // Unmodifiable
         this.accessRule = Collections.unmodifiableMap(rules);
     }
-
     public List<UserType> getAllowedUsers(String lotName) {
         return accessRule.getOrDefault(lotName, List.of());
     }

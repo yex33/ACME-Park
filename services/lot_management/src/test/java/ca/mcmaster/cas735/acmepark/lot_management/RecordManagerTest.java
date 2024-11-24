@@ -1,7 +1,7 @@
 package ca.mcmaster.cas735.acmepark.lot_management;
 
 import ca.mcmaster.cas735.acmepark.lot_management.business.RecordManager;
-import ca.mcmaster.cas735.acmepark.lot_management.business.entities.EntryRecords;
+import ca.mcmaster.cas735.acmepark.lot_management.business.entities.EntryRecord;
 import ca.mcmaster.cas735.acmepark.lot_management.dtos.IssueVehicleFine;
 import ca.mcmaster.cas735.acmepark.lot_management.port.required.RecordDataRepository;
 import org.junit.jupiter.api.Test;
@@ -27,9 +27,9 @@ public class RecordManagerTest {
         Integer fine = 50000;
         IssueVehicleFine request = new IssueVehicleFine(license, fine);
 
-        manager.findRecord(request);
+        manager.issueFine(request);
 
-        Optional<EntryRecords> result = database.findByLicensePlate(license);
+        Optional<EntryRecord> result = database.findByLicensePlate(license);
         assertThat(result).isPresent();
         assertThat(result.get().getUserId()).isEqualTo(0);
     }

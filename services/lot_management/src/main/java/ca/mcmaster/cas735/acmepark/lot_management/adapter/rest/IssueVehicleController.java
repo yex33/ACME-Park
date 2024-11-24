@@ -26,7 +26,7 @@ public class IssueVehicleController {
     @Operation(description = "Issue fine to the user by license")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ResponseEntity<String> lookupUser(@RequestBody IssueVehicleFine issueRequest) throws BadRequestException {
-        finder.findRecord(issueRequest);
+        finder.issueFine(issueRequest);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body("Fine issued successfully!");
     }
 }
