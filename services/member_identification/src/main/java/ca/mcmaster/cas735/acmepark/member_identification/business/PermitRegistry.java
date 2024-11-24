@@ -102,6 +102,7 @@ public class PermitRegistry implements PermitManagement, TransponderManagement {
         } else {
             AccessGateRequest request = new AccessGateRequest();
             request.setGateId(data.getGateId());
+            request.setLicense(data.getLicensePlate());
             request.setUserId(permit.getOrganizationId());
             request.setUserType(permit.getUserType());
             gateManager.requestGateOpen(request);
