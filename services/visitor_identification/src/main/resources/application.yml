@@ -20,11 +20,12 @@ spring:
 server:
   port: 9091
 
-#app:
-#  custom:
-#    messaging:
-#      payment-processing-exchange: payment.processing
-#      payment-success-queue: payment.success.member.queue
+app:
+  custom:
+    messaging:
+      payment-processing-exchange: payment.processing
+      payment-success-queue: payment.success.member.queue
+      gate-access-exchange: access.decider
 
 # Start management infrastructure for health check and general infos
 management:
