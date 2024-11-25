@@ -8,6 +8,6 @@ import java.util.UUID;
 @Value
 public class FineEvent {
     UUID userId;
-    Integer amount;
+    String violation;
     LocalDateTime issuedOn;
 }

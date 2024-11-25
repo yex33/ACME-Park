@@ -11,9 +11,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.stream.Stream;
 
+@AllArgsConstructor
 @Service
 @Slf4j
-@AllArgsConstructor
 public class PaymentInitiator implements ChargeEventHandler {
     private final FineManagement fineManagement;
 

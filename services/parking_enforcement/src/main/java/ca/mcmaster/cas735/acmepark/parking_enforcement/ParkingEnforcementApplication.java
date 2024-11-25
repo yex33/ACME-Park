@@ -16,6 +16,6 @@ public class ParkingEnforcementApplication {
 
     @Bean
     public CommandLineRunner commandLineRunner(ParkingRuleRepository repository) {
-        return args -> repository.save(ParkingRule.builder().name("you should not park").fine_amount(100).build());
+        return args -> repository.save(ParkingRule.builder().name("you should not park").fineAmount(100).build());
     }
 }

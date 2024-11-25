@@ -4,6 +4,7 @@ import ca.mcmaster.cas735.acmepark.parking_enforcement.business.entities.FineTra
 import ca.mcmaster.cas735.acmepark.parking_enforcement.business.entities.TransactionStatus;
 import ca.mcmaster.cas735.acmepark.parking_enforcement.dto.FineEvent;
 import ca.mcmaster.cas735.acmepark.parking_enforcement.ports.provided.FineManagement;
+import ca.mcmaster.cas735.acmepark.parking_enforcement.ports.provided.RuleManagement;
 import ca.mcmaster.cas735.acmepark.parking_enforcement.ports.required.FineTransactionRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,7 @@ import java.util.UUID;
 @Slf4j
 public class FineManager implements FineManagement {
     private final FineTransactionRepository repository;
+    private final RuleManagement ruleManagement;
 
     @Override
     @Transactional
@@ -27,7 +29,7 @@ public class FineManager implements FineManagement {
                 .userId(fineEvent.getUserId())
                 .status(TransactionStatus.UNPAID)
                 .issuedOn(fineEvent.getIssuedOn())
-                .amount(fineEvent.getAmount()).build());
+                .amount(ruleManagement.fineForViolating(fineEvent.getViolation())).build());
     }
 
     @Override

@@ -8,8 +8,8 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.function.Function;
 
-@Configuration
 @AllArgsConstructor
+@Configuration
 public class ChargeEventHandlersConfig {
     private final ChargeEventHandler chargeEventHandler;
 
