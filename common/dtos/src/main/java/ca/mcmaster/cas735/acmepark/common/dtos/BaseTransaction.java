@@ -18,7 +18,7 @@ public class BaseTransaction {
     public LocalDateTime timestamp;
 
     // The amount involved in the transaction, measured in cent, e.g. 2000 is equal to 20.00 dollar
-    public int amount;
+    public Integer amount;
 
     // ID of the user or entity initiating the transaction
     public String initiatedBy;
