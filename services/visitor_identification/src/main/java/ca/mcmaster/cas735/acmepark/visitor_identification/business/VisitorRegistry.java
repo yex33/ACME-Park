@@ -3,13 +3,12 @@ package ca.mcmaster.cas735.acmepark.visitor_identification.business;
 import ca.mcmaster.cas735.acmepark.common.dtos.AccessGateRequest;
 import ca.mcmaster.cas735.acmepark.common.dtos.UserType;
 import ca.mcmaster.cas735.acmepark.visitor_identification.business.entities.Visitor;
-import ca.mcmaster.cas735.acmepark.visitor_identification.ports.provided.GateManagement;
-import ca.mcmaster.cas735.acmepark.visitor_identification.ports.provided.VisitorManagement;
-import ca.mcmaster.cas735.acmepark.visitor_identification.ports.provided.VoucherManagement;
+import ca.mcmaster.cas735.acmepark.visitor_identification.ports.provided.*;
 import ca.mcmaster.cas735.acmepark.visitor_identification.ports.required.VisitorDataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -20,13 +19,17 @@ public class VisitorRegistry implements VisitorManagement {
     private VisitorDataRepository database;
     private GateManagement gateManager;
     private VoucherManagement voucherManager;
+    private ParkingFeeManagement parkingFeeManager;
 
+    // Hourly parking fee is $10.00
+    private Integer hourlyParkingFee = 1000;
 
     @Autowired
-    public VisitorRegistry(VisitorDataRepository database, GateManagement gateManager, VoucherManagement voucherManager) {
+    public VisitorRegistry(VisitorDataRepository database, GateManagement gateManager, VoucherManagement voucherManager, ParkingFeeManagement parkingFeeManager) {
         this.database = database;
         this.gateManager = gateManager;
         this.voucherManager = voucherManager;
+        this.parkingFeeManager = parkingFeeManager;
     }
 
     @Override
@@ -57,8 +60,26 @@ public class VisitorRegistry implements VisitorManagement {
 
     @Override
     public void exit(String visitorId, String licensePlate, String voucherId) {
+        Integer parkingFee = 0;
+
+        Visitor visitor = database.findVisitorByVisitorId(visitorId);
+
         if (voucherId != null) {
             voucherManager.redeemVoucher(visitorId, licensePlate);
+        } else {
+            Duration parkingDuration = Duration.between(visitor.getAccessTime(), LocalDateTime.now());
+
+            long hours = parkingDuration.toHours();
+            if (parkingDuration.toMinutes() % 60 != 0) {
+                hours++;
+            }
+
+            parkingFee = Math.toIntExact(hours) * this.hourlyParkingFee;
         }
+
+        visitor.setExitTime(LocalDateTime.now());
+        visitor.setExited(true);
+
+        database.saveAndFlush(visitor);
     }
 }

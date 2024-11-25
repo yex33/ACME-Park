@@ -1,6 +1,7 @@
 package ca.mcmaster.cas735.acmepark.visitor_identification.adapter.rest;
 
 import ca.mcmaster.cas735.acmepark.visitor_identification.dto.VisitorAccessData;
+import ca.mcmaster.cas735.acmepark.visitor_identification.dto.VisitorExitData;
 import ca.mcmaster.cas735.acmepark.visitor_identification.ports.provided.VisitorManagement;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -32,7 +33,7 @@ public class VisitorAccessController {
     @PutMapping(value = "/")
     @Operation(description = "Request visitor exit from parking lots.")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void exit(VisitorAccessData data) {
-        visitorManager.requestAccess(data.getLicensePlate(), data.getGateId());
+    public void exit(VisitorExitData data) {
+        visitorManager.exit(data.getVisitorId(), data.getLicensePlate(), data.getVoucherId());
     }
 }
