@@ -1,16 +1,22 @@
 package ca.mcmaster.cas735.acmepark.parking_enforcement.business.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.Data;
+import jakarta.persistence.*;
+import lombok.*;
 
-@Data
 @Entity
 @Table(name = "parking_rule")
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
+@Getter
+@Setter
+@Builder
 public class ParkingRule {
     @Id
-    public String parkingRuleId;
+    @SequenceGenerator(name = "parkingRuleSeq", sequenceName = "seq_parking_rule", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "parkingRuleSeq")
+    private Long parkingRuleId;
 
-    public String parkingRuleName;
+    private String name;
+    private Integer fine_amount;
 }

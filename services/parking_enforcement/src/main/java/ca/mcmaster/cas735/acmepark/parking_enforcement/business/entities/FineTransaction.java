@@ -1,14 +1,30 @@
 package ca.mcmaster.cas735.acmepark.parking_enforcement.business.entities;
 
-import ca.mcmaster.cas735.acmepark.common.dtos.BaseTransaction;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import jakarta.persistence.*;
+import lombok.*;
 
-@EqualsAndHashCode(callSuper = true)
+import java.time.LocalDateTime;
+
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
+@Getter
+@Setter
+@Builder
 @Entity
-@Data
 @Table(name = "fine_transaction")
-public class FineTransaction extends BaseTransaction {
+public class FineTransaction {
+    @Id
+    @SequenceGenerator(name = "fineTransactionSeq", sequenceName = "seq_fine_transaction", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "fineTransactionSeq")
+    private Long id;
+
+    private Long userId;
+
+    @Enumerated(EnumType.STRING)
+    private TransactionStatus status;
+
+    private LocalDateTime issuedOn;
+
+    private Integer amount;
 }
