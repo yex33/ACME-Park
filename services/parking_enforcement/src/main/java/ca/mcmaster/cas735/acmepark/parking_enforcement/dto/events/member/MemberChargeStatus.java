@@ -1,4 +1,4 @@
-package ca.mcmaster.cas735.acmepark.common.events.member;
+package ca.mcmaster.cas735.acmepark.parking_enforcement.dto.events.member;
 
 public enum MemberChargeStatus {
     MEMBER_CHARGE_PENDING,

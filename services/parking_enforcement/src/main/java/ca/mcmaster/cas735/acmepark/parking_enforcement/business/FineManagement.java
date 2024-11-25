@@ -1,11 +1,11 @@
 package ca.mcmaster.cas735.acmepark.parking_enforcement.business;
 
-import ca.mcmaster.cas735.acmepark.common.dtos.ChargeDto;
-import ca.mcmaster.cas735.acmepark.common.dtos.ChargeType;
-import ca.mcmaster.cas735.acmepark.common.dtos.InvoiceDto;
-import ca.mcmaster.cas735.acmepark.common.events.fine.FineEvent;
-import ca.mcmaster.cas735.acmepark.common.events.fine.FineStatus;
-import ca.mcmaster.cas735.acmepark.common.events.member.MemberChargeEvent;
+import ca.mcmaster.cas735.acmepark.parking_enforcement.dto.ChargeDto;
+import ca.mcmaster.cas735.acmepark.parking_enforcement.dto.ChargeType;
+import ca.mcmaster.cas735.acmepark.parking_enforcement.dto.InvoiceDto;
+import ca.mcmaster.cas735.acmepark.parking_enforcement.dto.events.fine.FineEvent;
+import ca.mcmaster.cas735.acmepark.parking_enforcement.dto.events.fine.FineStatus;
+import ca.mcmaster.cas735.acmepark.parking_enforcement.dto.events.member.MemberChargeEvent;
 import ca.mcmaster.cas735.acmepark.parking_enforcement.business.entities.TransactionStatus;
 import ca.mcmaster.cas735.acmepark.parking_enforcement.ports.provided.ChargeEventHandler;
 import ca.mcmaster.cas735.acmepark.parking_enforcement.ports.required.FineTransactionRepository;

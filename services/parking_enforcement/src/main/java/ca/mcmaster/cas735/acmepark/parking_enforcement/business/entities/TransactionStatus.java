@@ -1,6 +1,7 @@
 package ca.mcmaster.cas735.acmepark.parking_enforcement.business.entities;
 
 public enum TransactionStatus {
-    PAID,
     UNPAID,
+    PENDING,
+    PAID,
 }

@@ -1,7 +1,7 @@
-package ca.mcmaster.cas735.acmepark.common.events.member;
+package ca.mcmaster.cas735.acmepark.parking_enforcement.dto.events.member;
 
-import ca.mcmaster.cas735.acmepark.common.dtos.InvoiceDto;
-import ca.mcmaster.cas735.acmepark.common.events.Event;
+import ca.mcmaster.cas735.acmepark.parking_enforcement.dto.InvoiceDto;
+import ca.mcmaster.cas735.acmepark.parking_enforcement.dto.events.Event;
 import lombok.Value;
 
 import java.time.LocalDateTime;

@@ -1,7 +1,7 @@
-package ca.mcmaster.cas735.acmepark.common.events.fine;
+package ca.mcmaster.cas735.acmepark.parking_enforcement.dto.events.fine;
 
-import ca.mcmaster.cas735.acmepark.common.dtos.InvoiceDto;
-import ca.mcmaster.cas735.acmepark.common.events.Event;
+import ca.mcmaster.cas735.acmepark.parking_enforcement.dto.InvoiceDto;
+import ca.mcmaster.cas735.acmepark.parking_enforcement.dto.events.Event;
 import lombok.Builder;
 import lombok.Value;
 

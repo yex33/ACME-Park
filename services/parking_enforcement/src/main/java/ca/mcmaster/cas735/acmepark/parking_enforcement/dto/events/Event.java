@@ -1,4 +1,4 @@
-package ca.mcmaster.cas735.acmepark.common.events;
+package ca.mcmaster.cas735.acmepark.parking_enforcement.dto.events;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
