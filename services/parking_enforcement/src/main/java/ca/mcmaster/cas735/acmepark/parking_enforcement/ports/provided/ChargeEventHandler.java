@@ -1,8 +1,7 @@
 package ca.mcmaster.cas735.acmepark.parking_enforcement.ports.provided;
 
-import ca.mcmaster.cas735.acmepark.parking_enforcement.dto.events.fine.FineEvent;
-import ca.mcmaster.cas735.acmepark.parking_enforcement.dto.events.member.MemberChargeEvent;
+import ca.mcmaster.cas735.acmepark.parking_enforcement.dto.Invoice;
 
 public interface ChargeEventHandler {
-    FineEvent attachFines(MemberChargeEvent memberChargeEvent);
+    Invoice attachFines(Invoice invoice);
 }

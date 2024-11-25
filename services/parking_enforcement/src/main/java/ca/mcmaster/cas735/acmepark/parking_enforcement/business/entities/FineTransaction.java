@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,7 +20,7 @@ public class FineTransaction {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "fineTransactionSeq")
     private Long id;
 
-    private Long userId;
+    private UUID userId;
 
     @Enumerated(EnumType.STRING)
     private TransactionStatus status;

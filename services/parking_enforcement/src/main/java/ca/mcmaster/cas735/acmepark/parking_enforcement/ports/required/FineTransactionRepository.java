@@ -6,7 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface FineTransactionRepository extends JpaRepository<FineTransaction, String> {
-    Optional<List<FineTransaction>> findByUserIdAndStatusIs(Long userId, TransactionStatus status);
+    Optional<FineTransaction> findById(Long id);
+    Optional<List<FineTransaction>> findByUserIdAndStatusIs(UUID userId, TransactionStatus status);
 }
