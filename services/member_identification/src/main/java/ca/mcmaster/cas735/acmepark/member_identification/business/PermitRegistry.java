@@ -20,18 +20,16 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-public class PermitRegistry implements PermitManagement, TransponderManagement {
+public class PermitRegistry implements PermitManagement {
     private final PermitDataRepository database;
     private final MemberFeeManagement feeManager;
-    private final PaymentManagement paymentManager;
-    private final GateManagement gateManager;
+    private final PaymentSender paymentManager;
 
     @Autowired
-    public PermitRegistry(PermitDataRepository database, MemberFeeManagement feeManager, PaymentManagement paymentManager, GateManagement gateManager) {
+    public PermitRegistry(PermitDataRepository database, MemberFeeManagement feeManager, PaymentSender paymentManager) {
         this.database = database;
         this.feeManager = feeManager;
         this.paymentManager = paymentManager;
-        this.gateManager = gateManager;
     }
 
     @Override
@@ -88,38 +86,5 @@ public class PermitRegistry implements PermitManagement, TransponderManagement {
         }
         ).collect(Collectors.toList());
     }
-
-    @Override
-    public void requestGateOpen(TransponderAccessData data) {
-        Permit permit = database.findPermitByTransponderId(data.getTransponderId());
-
-        if (permit == null) {
-            return;
-        }
-
-        if (permit.isExpired()) {
-            return;
-        } else {
-            AccessGateRequest request = new AccessGateRequest();
-            request.setGateId(data.getGateId());
-            request.setLicense(data.getLicensePlate());
-            request.setUserId(permit.getOrganizationId());
-            request.setUserType(permit.getUserType());
-            gateManager.requestGateOpen(request);
-        }
-    }
-
-    @Override
-    public void issueTransponderByPermitId(String permitId) {
-        Permit permit = database.findPermitByPermitId(permitId);
-
-        permit.setStartDate(LocalDate.now());
-        permit.setExpiryDate(LocalDate.now().plusYears(1));
-        permit.setTransponderId(UUID.randomUUID().toString());
-        permit.setProcessed(true);
-
-        database.updatePermitByPermitId(permitId, permit);
-    }
-
 
 }

@@ -1,13 +1,10 @@
 package ca.mcmaster.cas735.acmepark.member_identification.business;
 
-import ca.mcmaster.cas735.acmepark.common.dtos.ParkingPermitInfo;
 import ca.mcmaster.cas735.acmepark.common.dtos.TransactionStatus;
 import ca.mcmaster.cas735.acmepark.common.dtos.TransactionType;
 import ca.mcmaster.cas735.acmepark.member_identification.business.entities.MemberFeeTransaction;
-import ca.mcmaster.cas735.acmepark.member_identification.business.entities.Permit;
 import ca.mcmaster.cas735.acmepark.member_identification.dto.MemberFeeCreationData;
 import ca.mcmaster.cas735.acmepark.member_identification.ports.provided.MemberFeeManagement;
-import ca.mcmaster.cas735.acmepark.member_identification.ports.provided.PermitManagement;
 import ca.mcmaster.cas735.acmepark.member_identification.ports.provided.TransponderManagement;
 import ca.mcmaster.cas735.acmepark.member_identification.ports.required.MemberFeeTransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,14 +27,14 @@ public class MemberFeeRegistry implements MemberFeeManagement {
     @Override
     public MemberFeeTransaction createTransaction(MemberFeeCreationData request) {
         MemberFeeTransaction transaction = new MemberFeeTransaction();
-        transaction.transactionId = UUID.randomUUID().toString();
-        transaction.transactionType = TransactionType.MEMBER_FEE;
-        transaction.transactionStatus = TransactionStatus.PENDING;
-        transaction.amount = request.getAmount();
-        transaction.userType = request.getUserType();
-        transaction.initiatedBy = request.getOrganizationId();
-        transaction.timestamp = request.getTimestamp();
-        transaction.description = request.getDescription();
+        transaction.setTransactionId(UUID.randomUUID().toString());
+        transaction.setTransactionType(TransactionType.MEMBER_FEE);
+        transaction.setTransactionStatus(TransactionStatus.PENDING);
+        transaction.setAmount(request.getAmount());
+        transaction.setUserType(request.getUserType());
+        transaction.setInitiatedBy(request.getOrganizationId());
+        transaction.setTimestamp(request.getTimestamp());
+        transaction.setDescription(request.getDescription());
         transaction.setAssociatedPermitId(request.getAssociatedPermitId());
         database.saveAndFlush(transaction);
 
@@ -50,9 +47,9 @@ public class MemberFeeRegistry implements MemberFeeManagement {
 
         if (transaction == null) { return; }
 
-        transaction.transactionStatus = TransactionStatus.SUCCESS;
+        transaction.setTransactionStatus(TransactionStatus.SUCCESS);
 
-        database.updateMemberFeeTransactionByTransactionId(transactionId, transaction);
+        database.saveAndFlush(transaction);
 
         transponderManager.issueTransponderByPermitId(transaction.getAssociatedPermitId());
     }
