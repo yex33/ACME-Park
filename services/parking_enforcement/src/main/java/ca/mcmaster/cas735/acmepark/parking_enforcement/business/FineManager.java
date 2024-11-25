@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -34,12 +33,11 @@ public class FineManager implements FineManagement {
 
     @Override
     @Transactional
-    public Optional<List<FineTransaction>> pendingPaymentFrom(UUID userId) {
-        return repository.findByUserIdAndStatusIs(userId, TransactionStatus.UNPAID)
-                .map(fineTransactions -> {
-                    fineTransactions.forEach(transaction -> transaction.setStatus(TransactionStatus.PENDING));
-                    return fineTransactions;
-                });
+    public List<FineTransaction> registerPendingPaymentFrom(UUID userId) {
+        return repository.findByUserIdAndStatusIs(userId, TransactionStatus.UNPAID).stream()
+                .peek(fineTransaction -> fineTransaction.setStatus(TransactionStatus.PENDING))
+                .toList();
+
     }
 
     @Override

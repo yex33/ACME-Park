@@ -19,19 +19,16 @@ public class PaymentInitiator implements ChargeEventHandler {
 
     @Override
     public Invoice attachFines(Invoice invoice) {
-        return fineManagement.pendingPaymentFrom(invoice.getUser().getUserId())
-                .filter(fineTransactions -> !fineTransactions.isEmpty())
-                .map(fineTransactions -> {
-                    var fineCharges = fineTransactions.stream().map(fineTransaction -> ChargeDto.builder()
-                            .transactionId(fineTransaction.getId())
-                            .chargeType(ChargeType.FINE)
-                            .description("Parking Violation")
-                            .amount(fineTransaction.getAmount())
-                            .issuedOn(fineTransaction.getIssuedOn().toLocalDate()).build());
-                    return Invoice.builder()
-                            .user(invoice.getUser())
-                            .charges(Stream.concat(invoice.getCharges().stream(), fineCharges).toList()).build();
-                })
-                .orElse(invoice);
+        var fineCharges = fineManagement.registerPendingPaymentFrom(invoice.getUser().getUserId())
+                .stream()
+                .map(fineTransaction -> ChargeDto.builder()
+                        .transactionId(fineTransaction.getId())
+                        .chargeType(ChargeType.FINE)
+                        .description("Parking Violation")
+                        .amount(fineTransaction.getAmount())
+                        .issuedOn(fineTransaction.getIssuedOn().toLocalDate()).build());
+        return Invoice.builder()
+                .user(invoice.getUser())
+                .charges(Stream.concat(invoice.getCharges().stream(), fineCharges).toList()).build();
     }
 }

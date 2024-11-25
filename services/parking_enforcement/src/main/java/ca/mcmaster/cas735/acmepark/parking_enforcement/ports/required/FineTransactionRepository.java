@@ -10,5 +10,5 @@ import java.util.UUID;
 
 public interface FineTransactionRepository extends JpaRepository<FineTransaction, String> {
     Optional<FineTransaction> findById(Long id);
-    Optional<List<FineTransaction>> findByUserIdAndStatusIs(UUID userId, TransactionStatus status);
+    List<FineTransaction> findByUserIdAndStatusIs(UUID userId, TransactionStatus status);
 }
