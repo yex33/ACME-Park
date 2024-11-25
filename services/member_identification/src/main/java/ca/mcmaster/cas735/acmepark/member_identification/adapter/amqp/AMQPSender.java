@@ -32,7 +32,7 @@ public class AMQPSender implements PaymentSender, GateManagement {
         PaymentRequest paymentRequest = new PaymentRequest();
         paymentRequest.initiator = transaction.getInitiatedBy();
         paymentRequest.transactions = List.of(transaction).stream().map( t -> {
-            BaseTransaction baseTransaction = new BaseTransaction(t.getTransactionId(), t.getTransactionType(), t.getTransactionStatus(), t.getTimestamp(), t.getAmount().intValue(), t.getInitiatedBy(), t.getUserType(), t.getDescription());
+            BaseTransaction baseTransaction = new BaseTransaction(t.getTransactionId(), t.getTransactionType(), t.getTransactionStatus(), t.getTimestamp(), t.getAmount(), t.getInitiatedBy(), t.getUserType(), t.getDescription());
             return baseTransaction;
         }).collect(Collectors.toList());
 
