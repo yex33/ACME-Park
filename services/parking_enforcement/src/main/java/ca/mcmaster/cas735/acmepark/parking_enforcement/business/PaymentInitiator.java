@@ -2,7 +2,7 @@ package ca.mcmaster.cas735.acmepark.parking_enforcement.business;
 
 import ca.mcmaster.cas735.acmepark.common.dtos.TransactionType;
 import ca.mcmaster.cas735.acmepark.parking_enforcement.dto.ChargeDto;
-import ca.mcmaster.cas735.acmepark.parking_enforcement.dto.Invoice;
+import ca.mcmaster.cas735.acmepark.parking_enforcement.dto.InvoiceDto;
 import ca.mcmaster.cas735.acmepark.parking_enforcement.ports.provided.ChargeEventHandler;
 import ca.mcmaster.cas735.acmepark.parking_enforcement.ports.provided.FineManagement;
 import lombok.AllArgsConstructor;
@@ -18,8 +18,8 @@ public class PaymentInitiator implements ChargeEventHandler {
     private final FineManagement fineManagement;
 
     @Override
-    public Invoice attachFines(Invoice invoice) {
-        var fineCharges = fineManagement.registerPendingPaymentFrom(invoice.getUser().getUserId())
+    public InvoiceDto attachFines(InvoiceDto invoiceDto) {
+        var fineCharges = fineManagement.registerPendingPaymentFrom(invoiceDto.getUser().getUserId())
                 .stream()
                 .map(fineTransaction -> ChargeDto.builder()
                         .transactionId(String.valueOf(fineTransaction.getId()))
@@ -27,8 +27,8 @@ public class PaymentInitiator implements ChargeEventHandler {
                         .description("Parking Violation")
                         .amount(fineTransaction.getAmount())
                         .issuedOn(fineTransaction.getIssuedOn().toLocalDate()).build());
-        return Invoice.builder()
-                .user(invoice.getUser())
-                .charges(Stream.concat(invoice.getCharges().stream(), fineCharges).toList()).build();
+        return InvoiceDto.builder()
+                .user(invoiceDto.getUser())
+                .charges(Stream.concat(invoiceDto.getCharges().stream(), fineCharges).toList()).build();
     }
 }

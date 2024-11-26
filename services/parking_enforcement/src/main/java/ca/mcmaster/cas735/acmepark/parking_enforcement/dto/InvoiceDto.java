@@ -7,7 +7,7 @@ import java.util.List;
 
 @Value
 @Builder
-public class Invoice {
+public class InvoiceDto {
     UserDto user;
     List<ChargeDto> charges;
 }

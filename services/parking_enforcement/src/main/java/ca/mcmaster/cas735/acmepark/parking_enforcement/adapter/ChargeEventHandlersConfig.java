@@ -2,7 +2,7 @@ package ca.mcmaster.cas735.acmepark.parking_enforcement.adapter;
 
 import ca.mcmaster.cas735.acmepark.common.dtos.PaymentRequest;
 import ca.mcmaster.cas735.acmepark.parking_enforcement.dto.ChargeDto;
-import ca.mcmaster.cas735.acmepark.parking_enforcement.dto.Invoice;
+import ca.mcmaster.cas735.acmepark.parking_enforcement.dto.InvoiceDto;
 import ca.mcmaster.cas735.acmepark.parking_enforcement.dto.UserDto;
 import ca.mcmaster.cas735.acmepark.parking_enforcement.ports.provided.ChargeEventHandler;
 import lombok.AllArgsConstructor;
@@ -19,12 +19,12 @@ public class ChargeEventHandlersConfig {
     private final ChargeEventHandler chargeEventHandler;
 
     @Bean
-    public Function<PaymentRequest, Invoice> invoiceProcessor() {
+    public Function<PaymentRequest, InvoiceDto> invoiceProcessor() {
         return paymentRequest -> chargeEventHandler.attachFines(toInvoice(paymentRequest));
     }
 
-    private Invoice toInvoice(PaymentRequest paymentRequest) {
-        return Invoice.builder()
+    private InvoiceDto toInvoice(PaymentRequest paymentRequest) {
+        return InvoiceDto.builder()
                 .user(UserDto.builder()
                         .userId(UUID.fromString(paymentRequest.initiator))
                         .userType(paymentRequest.userType).build())
