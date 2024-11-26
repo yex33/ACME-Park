@@ -1,4 +1,4 @@
-package ca.mcmaster.cas735.acmepark.lot_management.adapter.amqp;
+package ca.mcmaster.cas735.acmepark.lot_management.adapter.amqp.sender;
 
 import ca.mcmaster.cas735.acmepark.lot_management.dtos.IssueUserFine;
 import ca.mcmaster.cas735.acmepark.lot_management.port.required.IssueUserFineSender;

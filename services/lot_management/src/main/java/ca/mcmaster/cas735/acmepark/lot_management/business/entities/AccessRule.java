@@ -11,7 +11,6 @@ import java.util.Map;
 @Data
 public class AccessRule {
     private final Map<String, List<UserType>> accessRule;
-
     // The Preset rule
     public AccessRule() {
         Map<String, List<UserType>> rules = new HashMap<>();

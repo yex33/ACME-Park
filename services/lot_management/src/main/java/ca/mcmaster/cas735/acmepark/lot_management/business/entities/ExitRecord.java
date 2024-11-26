@@ -8,26 +8,27 @@ import org.hibernate.annotations.UuidGenerator;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name="entry_record")
+@Table(name="exit_record")
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
 @Getter
 @Setter
 @Builder
-public class EntryRecord {
+public class ExitRecord {
     @Id
     @UuidGenerator
-    @Column(name = "entryRecordId", unique = true)
-    private String entryRecordId;
+    @Column(name = "exitRecordId", unique = true)
+    private String exitRecordId;
 
-    @OneToOne(mappedBy = "entryRecord", cascade = CascadeType.ALL)
-    private ExitRecord exitRecord;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "entry_record_id", referencedColumnName = "entryRecordId")
+    private EntryRecord entryRecord;
 
     private String licensePlate;
     private String userId;
     private UserType userType;
     private String gateId;
-    private LocalDateTime entryTime;
+    private LocalDateTime exitTime;
 }
 

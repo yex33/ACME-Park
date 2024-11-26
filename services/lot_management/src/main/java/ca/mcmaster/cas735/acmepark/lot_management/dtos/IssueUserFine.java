@@ -1,10 +1,12 @@
 package ca.mcmaster.cas735.acmepark.lot_management.dtos;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data @NoArgsConstructor
+@Data
+@Getter
+@Setter
+@NoArgsConstructor
 public class IssueUserFine {
     private String userID;
-    private Integer fine;
+    private String fine;
 }

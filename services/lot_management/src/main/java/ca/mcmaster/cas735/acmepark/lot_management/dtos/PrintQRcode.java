@@ -4,6 +4,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data @NoArgsConstructor
-public class AccessApproval {
-    private String approval = "Access Approval";
+public class PrintQRcode {
+    // TODO: QR code is an entity???
+    private String QRcode = "QR code";
+    private String license;
 }

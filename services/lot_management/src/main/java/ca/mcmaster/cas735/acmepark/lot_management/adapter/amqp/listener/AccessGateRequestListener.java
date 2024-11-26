@@ -1,4 +1,4 @@
-package ca.mcmaster.cas735.acmepark.lot_management.adapter.amqp;
+package ca.mcmaster.cas735.acmepark.lot_management.adapter.amqp.listener;
 
 import ca.mcmaster.cas735.acmepark.common.dtos.AccessGateRequest;
 import ca.mcmaster.cas735.acmepark.lot_management.port.provided.AccessGateRequestReceiver;
@@ -12,21 +12,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service @Slf4j
-public class AccessGateListener {
+public class AccessGateRequestListener {
     private final AccessGateRequestReceiver decider;
 
     @Autowired
-    public AccessGateListener(AccessGateRequestReceiver decider) {
+    public AccessGateRequestListener(AccessGateRequestReceiver decider) {
         this.decider = decider;
     }
 
     @RabbitListener(bindings = @QueueBinding(
-            value = @Queue(value = "access.approval.queue", durable = "true"),
-            exchange = @Exchange(value = "${app.custom.messaging.inbound-exchange-topic-access}",
+            value = @Queue(value = "gate.control.queue", durable = "true"),
+            exchange = @Exchange(value = "${app.custom.messaging.inbound-exchange-topic-gate}",
                     ignoreDeclarationExceptions = "true", type = "topic"),
             key = "*"))
     public void listen(String data){
-        log.debug("Receiving ? request {}", data);
+        log.debug("Receiving access request {}", data);
         AccessGateRequest request = translate(data);
         decider.checkRule(request);
     }
