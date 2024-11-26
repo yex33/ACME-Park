@@ -1,7 +1,7 @@
 package ca.mcmaster.cas735.acmepark.parking_enforcement.business;
 
+import ca.mcmaster.cas735.acmepark.common.dtos.TransactionType;
 import ca.mcmaster.cas735.acmepark.parking_enforcement.dto.ChargeDto;
-import ca.mcmaster.cas735.acmepark.parking_enforcement.dto.ChargeType;
 import ca.mcmaster.cas735.acmepark.parking_enforcement.dto.Invoice;
 import ca.mcmaster.cas735.acmepark.parking_enforcement.ports.provided.ChargeEventHandler;
 import ca.mcmaster.cas735.acmepark.parking_enforcement.ports.provided.FineManagement;
@@ -22,8 +22,8 @@ public class PaymentInitiator implements ChargeEventHandler {
         var fineCharges = fineManagement.registerPendingPaymentFrom(invoice.getUser().getUserId())
                 .stream()
                 .map(fineTransaction -> ChargeDto.builder()
-                        .transactionId(fineTransaction.getId())
-                        .chargeType(ChargeType.FINE)
+                        .transactionId(String.valueOf(fineTransaction.getId()))
+                        .transactionType(TransactionType.VIOLATION_FINE)
                         .description("Parking Violation")
                         .amount(fineTransaction.getAmount())
                         .issuedOn(fineTransaction.getIssuedOn().toLocalDate()).build());

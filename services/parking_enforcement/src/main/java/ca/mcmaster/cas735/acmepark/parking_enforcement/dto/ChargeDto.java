@@ -1,5 +1,6 @@
 package ca.mcmaster.cas735.acmepark.parking_enforcement.dto;
 
+import ca.mcmaster.cas735.acmepark.common.dtos.TransactionType;
 import lombok.Builder;
 import lombok.Value;
 
@@ -8,8 +9,8 @@ import java.time.LocalDate;
 @Value
 @Builder
 public class ChargeDto {
-    Long transactionId;
-    ChargeType chargeType;
+    String transactionId;
+    TransactionType transactionType;
     String description;
     Integer amount;
     LocalDate issuedOn;

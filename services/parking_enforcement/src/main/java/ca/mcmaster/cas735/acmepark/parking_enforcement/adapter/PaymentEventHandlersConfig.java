@@ -1,7 +1,7 @@
 package ca.mcmaster.cas735.acmepark.parking_enforcement.adapter;
 
+import ca.mcmaster.cas735.acmepark.common.dtos.TransactionType;
 import ca.mcmaster.cas735.acmepark.parking_enforcement.dto.ChargeTransaction;
-import ca.mcmaster.cas735.acmepark.parking_enforcement.dto.ChargeType;
 import ca.mcmaster.cas735.acmepark.parking_enforcement.dto.PaymentEvent;
 import ca.mcmaster.cas735.acmepark.parking_enforcement.dto.PaymentStatus;
 import ca.mcmaster.cas735.acmepark.parking_enforcement.ports.provided.FineManagement;
@@ -20,7 +20,7 @@ public class PaymentEventHandlersConfig {
     public Consumer<PaymentEvent> paymentEventConsumer() {
         return paymentEvent -> {
             var fineTransactionIds = paymentEvent.getTransactions().stream()
-                    .filter(chargeTransaction -> chargeTransaction.getChargeType().equals(ChargeType.FINE))
+                    .filter(chargeTransaction -> chargeTransaction.getTransactionType().equals(TransactionType.VIOLATION_FINE))
                     .map(ChargeTransaction::getTransactionId)
                     .toList();
             if (paymentEvent.getStatus().equals(PaymentStatus.SUCCESS)) {
