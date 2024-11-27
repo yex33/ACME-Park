@@ -5,6 +5,7 @@ import ca.mcmaster.cas735.acmepark.common.dtos.BaseTransaction;
 import ca.mcmaster.cas735.acmepark.common.dtos.PaymentRequest;
 import ca.mcmaster.cas735.acmepark.member_identification.business.entities.MemberFeeTransaction;
 import ca.mcmaster.cas735.acmepark.member_identification.ports.provided.GateManagement;
+import ca.mcmaster.cas735.acmepark.member_identification.ports.provided.MonitorDataSender;
 import ca.mcmaster.cas735.acmepark.member_identification.ports.provided.PaymentSender;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -16,7 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class AMQPSender implements PaymentSender, GateManagement {
+public class AMQPSender implements PaymentSender, GateManagement, MonitorDataSender {
     private final RabbitTemplate rabbitTemplate;
 
     @Value("${app.custom.messaging.payment-processing-exchange}") private String paymentExchange;
@@ -44,6 +45,11 @@ public class AMQPSender implements PaymentSender, GateManagement {
     @Override
     public void requestGateOpen(AccessGateRequest request) {
         rabbitTemplate.convertAndSend(gateExchange, "", toJSONString(request));
+    }
+
+    @Override
+    public void sendPermitSale(String permitId) {
+
     }
 
     private String toJSONString(Object object) {

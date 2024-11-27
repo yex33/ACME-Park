@@ -5,6 +5,7 @@ import ca.mcmaster.cas735.acmepark.common.dtos.TransactionType;
 import ca.mcmaster.cas735.acmepark.member_identification.business.entities.MemberFeeTransaction;
 import ca.mcmaster.cas735.acmepark.member_identification.dto.MemberFeeCreationData;
 import ca.mcmaster.cas735.acmepark.member_identification.ports.provided.MemberFeeManagement;
+import ca.mcmaster.cas735.acmepark.member_identification.ports.provided.MonitorDataSender;
 import ca.mcmaster.cas735.acmepark.member_identification.ports.provided.TransponderManagement;
 import ca.mcmaster.cas735.acmepark.member_identification.ports.required.MemberFeeTransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +18,13 @@ public class MemberFeeRegistry implements MemberFeeManagement {
 
     private final MemberFeeTransactionRepository database;
     private final TransponderManagement transponderManager;
+    private final MonitorDataSender monitorDataSender;
 
     @Autowired
-    public MemberFeeRegistry(MemberFeeTransactionRepository database, TransponderManagement transponderManager) {
+    public MemberFeeRegistry(MemberFeeTransactionRepository database, TransponderManagement transponderManager, MonitorDataSender monitorDataSender) {
         this.database = database;
         this.transponderManager = transponderManager;
+        this.monitorDataSender = monitorDataSender;
     }
 
     @Override
@@ -52,6 +55,8 @@ public class MemberFeeRegistry implements MemberFeeManagement {
         database.saveAndFlush(transaction);
 
         transponderManager.issueTransponderByPermitId(transaction.getAssociatedPermitId());
+
+        monitorDataSender.sendPermitSale(transaction.getAssociatedPermitId());
     }
 
 
