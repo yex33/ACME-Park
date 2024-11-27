@@ -1,6 +1,8 @@
 package ca.mcmaster.cas735.acmepark.payment_processing.adapter;
 
 import ca.mcmaster.cas735.acmepark.payment_processing.dto.InvoiceDto;
+import ca.mcmaster.cas735.acmepark.payment_processing.dto.PaymentEvent;
+import ca.mcmaster.cas735.acmepark.payment_processing.dto.PaymentMethodSelection;
 import ca.mcmaster.cas735.acmepark.payment_processing.dto.PaymentMethodSelectionRequest;
 import ca.mcmaster.cas735.acmepark.payment_processing.ports.provided.PaymentRequestHandling;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,5 +23,10 @@ public class PaymentRequestHandlersConfig {
     @Bean
     public Function<InvoiceDto, PaymentMethodSelectionRequest> paymentRequestProcessor() {
         return paymentRequestHandling::attachAvailablePaymentMethods;
+    }
+
+    @Bean
+    public Function<PaymentMethodSelection, PaymentEvent> paymentMethodSelectionProcessor() {
+        return paymentRequestHandling::processPayment;
     }
 }

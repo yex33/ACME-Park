@@ -8,7 +8,8 @@ import java.util.UUID;
 @Service
 public class PaySlipController implements PaySlipManagement {
     @Override
-    public void withholdCredit(UUID userId, Integer amount) {
+    public boolean withholdCredit(UUID userId, Integer amount) {
         // Issue synchronous call to an external payslip management service
+        return true;
     }
 }

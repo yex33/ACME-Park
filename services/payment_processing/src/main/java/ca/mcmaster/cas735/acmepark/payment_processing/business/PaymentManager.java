@@ -6,6 +6,7 @@ import ca.mcmaster.cas735.acmepark.payment_processing.ports.provided.PaymentRequ
 import ca.mcmaster.cas735.acmepark.payment_processing.ports.required.Banking;
 import ca.mcmaster.cas735.acmepark.payment_processing.ports.required.InvoiceRepository;
 import ca.mcmaster.cas735.acmepark.payment_processing.ports.required.PaySlipManagement;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,6 +36,7 @@ public class PaymentManager implements PaymentRequestHandling {
     }
 
     @Override
+    @Transactional
     public PaymentMethodSelectionRequest attachAvailablePaymentMethods(InvoiceDto invoiceDto) {
         var invoice = Invoice.builder()
                 .user(User.builder()
@@ -62,19 +64,16 @@ public class PaymentManager implements PaymentRequestHandling {
     public PaymentEvent processPayment(PaymentMethodSelection paymentMethodSelection) {
         var invoice = repository.findById(paymentMethodSelection.getInvoiceId())
                 .orElseThrow();
-        switch (paymentMethodSelection.getPaymentMethod()) {
-            case UPFRONT_PAYMENT:
-                banking.reserveCredit(invoice.getUser().getId(), invoice.getTotal());
-            case RESERVE_IN_PAYSLIP:
-                paySlipManagement.withholdCredit(invoice.getUser().getId(), invoice.getTotal());
-        }
+        boolean success = switch (paymentMethodSelection.getPaymentMethod()) {
+            case UPFRONT_PAYMENT -> banking.reserveCredit(invoice.getUser().getId(), invoice.getTotal());
+            case RESERVE_IN_PAYSLIP -> paySlipManagement.withholdCredit(invoice.getUser().getId(), invoice.getTotal());
+        };
         return PaymentEvent.builder()
-                .status(PaymentStatus.SUCCESS)
+                .status(success ? PaymentStatus.SUCCESS : PaymentStatus.FAILED)
                 .transactions(invoice.getCharges().stream()
                         .map(charge -> ChargeTransaction.builder()
                                 .transactionId(charge.getTransactionId())
                                 .transactionType(charge.getType().getTransactionType()).build())
-                        .toList())
-                .build();
+                        .toList()).build();
     }
 }

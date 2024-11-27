@@ -9,7 +9,8 @@ import java.util.UUID;
 public class BankController implements Banking {
 
     @Override
-    public void reserveCredit(UUID userId, Integer amount) {
+    public boolean reserveCredit(UUID userId, Integer amount) {
         // Issue synchronous call to an external banking service
+        return true;
     }
 }
