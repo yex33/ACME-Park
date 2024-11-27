@@ -9,7 +9,6 @@ import lombok.Setter;
 @Setter @Getter
 @Builder
 public class AnalysisResult {
-    // peak usage time can be found on dashboard
     private long occupancy;
     private String gateId;
 }
