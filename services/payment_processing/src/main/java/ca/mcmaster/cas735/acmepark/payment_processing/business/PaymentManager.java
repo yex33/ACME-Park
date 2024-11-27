@@ -1,12 +1,11 @@
 package ca.mcmaster.cas735.acmepark.payment_processing.business;
 
 import ca.mcmaster.cas735.acmepark.payment_processing.business.entities.*;
-import ca.mcmaster.cas735.acmepark.payment_processing.dto.ChargeDto;
-import ca.mcmaster.cas735.acmepark.payment_processing.dto.InvoiceDto;
-import ca.mcmaster.cas735.acmepark.payment_processing.dto.PaymentMethod;
-import ca.mcmaster.cas735.acmepark.payment_processing.dto.PaymentMethodSelectionRequest;
+import ca.mcmaster.cas735.acmepark.payment_processing.dto.*;
 import ca.mcmaster.cas735.acmepark.payment_processing.ports.provided.PaymentRequestHandling;
+import ca.mcmaster.cas735.acmepark.payment_processing.ports.required.Banking;
 import ca.mcmaster.cas735.acmepark.payment_processing.ports.required.InvoiceRepository;
+import ca.mcmaster.cas735.acmepark.payment_processing.ports.required.PaySlipManagement;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,10 +24,14 @@ public class PaymentManager implements PaymentRequestHandling {
     );
 
     private final InvoiceRepository repository;
+    private final PaySlipManagement paySlipManagement;
+    private final Banking banking;
 
     @Autowired
-    public PaymentManager(InvoiceRepository repository) {
+    public PaymentManager(InvoiceRepository repository, PaySlipManagement paySlipManagement, Banking banking) {
         this.repository = repository;
+        this.paySlipManagement = paySlipManagement;
+        this.banking = banking;
     }
 
     @Override
@@ -53,5 +56,25 @@ public class PaymentManager implements PaymentRequestHandling {
                 .invoice(invoiceDto)
                 .invoiceId(invoice.getId())
                 .paymentMethods(PAYMENT_METHODS_FOR.get(invoice.getUser().getUserType())).build();
+    }
+
+    @Override
+    public PaymentEvent processPayment(PaymentMethodSelection paymentMethodSelection) {
+        var invoice = repository.findById(paymentMethodSelection.getInvoiceId())
+                .orElseThrow();
+        switch (paymentMethodSelection.getPaymentMethod()) {
+            case UPFRONT_PAYMENT:
+                banking.reserveCredit(invoice.getUser().getId(), invoice.getTotal());
+            case RESERVE_IN_PAYSLIP:
+                paySlipManagement.withholdCredit(invoice.getUser().getId(), invoice.getTotal());
+        }
+        return PaymentEvent.builder()
+                .status(PaymentStatus.SUCCESS)
+                .transactions(invoice.getCharges().stream()
+                        .map(charge -> ChargeTransaction.builder()
+                                .transactionId(charge.getTransactionId())
+                                .transactionType(charge.getType().getTransactionType()).build())
+                        .toList())
+                .build();
     }
 }

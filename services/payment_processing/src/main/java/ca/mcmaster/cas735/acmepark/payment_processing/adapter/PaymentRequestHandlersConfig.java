@@ -19,7 +19,7 @@ public class PaymentRequestHandlersConfig {
     }
 
     @Bean
-    public Function<InvoiceDto, PaymentMethodSelectionRequest> paymentRequestConsumer() {
+    public Function<InvoiceDto, PaymentMethodSelectionRequest> paymentRequestProcessor() {
         return paymentRequestHandling::attachAvailablePaymentMethods;
     }
 }
