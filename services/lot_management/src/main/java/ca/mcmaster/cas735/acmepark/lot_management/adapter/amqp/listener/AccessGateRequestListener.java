@@ -21,8 +21,8 @@ public class AccessGateRequestListener {
     }
 
     @RabbitListener(bindings = @QueueBinding(
-            value = @Queue(value = "gate.control.queue", durable = "true"),
-            exchange = @Exchange(value = "${app.custom.messaging.inbound-exchange-topic-gate}",
+            value = @Queue(value = "access.gate.queue", durable = "true"),
+            exchange = @Exchange(value = "${app.custom.messaging.inbound-exchange-topic-access}",
                     ignoreDeclarationExceptions = "true", type = "topic"),
             key = "*"))
     public void listen(String data){

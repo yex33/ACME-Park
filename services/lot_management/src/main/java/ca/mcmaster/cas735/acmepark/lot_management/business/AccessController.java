@@ -15,6 +15,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service @Slf4j
 @AllArgsConstructor
 public class AccessController implements AccessGateRequestReceiver {
@@ -40,6 +42,7 @@ public class AccessController implements AccessGateRequestReceiver {
                 log.debug("Send print QR code request");
                 PrintQRcode qrCode = new PrintQRcode();
                 qrCode.setLicense(license);
+                qrCode.setQRcode(UUID.randomUUID().toString());
                 qrSender.sendQRcodePrint(qrCode);
                 log.debug("QR code sent");
             }

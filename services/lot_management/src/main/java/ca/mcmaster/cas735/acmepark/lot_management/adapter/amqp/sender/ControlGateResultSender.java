@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 public class ControlGateResultSender implements ControlGateSender {
     private final RabbitTemplate rabbitTemplate;
 
-    @Value("${app.custom.messaging.outbound-exchange-topic-access-result}") private String exchange;
+    @Value("${app.custom.messaging.outbound-exchange-topic-control}") private String exchange;
 
     public ControlGateResultSender(RabbitTemplate rabbitTemplate) {
         this.rabbitTemplate = rabbitTemplate;
@@ -36,7 +36,7 @@ public class ControlGateResultSender implements ControlGateSender {
     }
 
     @Bean
-    public TopicExchange outboundApproval() {
+    public TopicExchange outboundControl() {
         return new TopicExchange(exchange);
     }
 }
