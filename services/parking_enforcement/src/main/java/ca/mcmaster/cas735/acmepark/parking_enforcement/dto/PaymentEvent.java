@@ -11,5 +11,5 @@ import java.util.List;
 @Jacksonized
 public class PaymentEvent {
     PaymentStatus status;
-    List<ChargeTransaction> transactions;
+    List<ChargeReference> transactions;
 }

@@ -25,7 +25,7 @@ public class PaymentInitiator implements ChargeEventHandler {
     public PaymentRequest attachFines(PaymentRequest paymentRequest) {
         var fineCharges = fineManagement.registerPendingPaymentFrom(paymentRequest.getUser().getUserId()).stream()
                 .map(fineTransaction -> ChargeDto.builder()
-                        .transactionId(String.valueOf(fineTransaction.getId()))
+                        .transactionId(fineTransaction.getId().toString())
                         .transactionType(TransactionType.VIOLATION_FINE)
                         .description("Parking Violation")
                         .amount(fineTransaction.getAmount())

@@ -8,7 +8,7 @@ import lombok.extern.jackson.Jacksonized;
 @Value
 @Builder
 @Jacksonized
-public class ChargeTransaction {
-    Long transactionId;
+public class ChargeReference {
+    String transactionId;
     TransactionType transactionType;
 }
