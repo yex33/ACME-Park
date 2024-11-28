@@ -26,7 +26,7 @@ server:
 app:
   custom:
     messaging:
-      payment-processing-exchange: payment.processing
+      payment-processing-exchange: charge.event
       payment-success-queue: payment.success.member.queue
       gate-access-exchange: access.receiver
 
