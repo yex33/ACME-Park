@@ -5,17 +5,21 @@ import ca.mcmaster.cas735.acmepark.common.dtos.PaymentRequest;
 import ca.mcmaster.cas735.acmepark.common.dtos.TransactionType;
 import ca.mcmaster.cas735.acmepark.parking_enforcement.ports.provided.ChargeEventHandler;
 import ca.mcmaster.cas735.acmepark.parking_enforcement.ports.provided.FineManagement;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.stream.Stream;
 
-@AllArgsConstructor
 @Service
 @Slf4j
 public class PaymentInitiator implements ChargeEventHandler {
     private final FineManagement fineManagement;
+
+    @Autowired
+    public PaymentInitiator(FineManagement fineManagement) {
+        this.fineManagement = fineManagement;
+    }
 
     @Override
     public PaymentRequest attachFines(PaymentRequest paymentRequest) {
