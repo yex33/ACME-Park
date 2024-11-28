@@ -4,12 +4,26 @@ include:
   - ./../infrastructure/docker-compose.yml
 
 services:
+  member-identification:
+    container_name: member-identification
+    build:
+      context: ../services/member_identification
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./data:/data
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      service-registry:
+        condition: service_healthy
+
   lot-management:
     container_name: lot-management
     build:
       context: ../services/lot_management
     ports:
-      - "9090:9090"
+      - "9093:9093"
     volumes:
       - ./data:/data
     depends_on:
