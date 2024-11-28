@@ -1,4 +1,4 @@
-package ca.mcmaster.cas735.acmepark.parking_enforcement.dto;
+package ca.mcmaster.cas735.acmepark.common.dtos;
 
 import lombok.Builder;
 import lombok.Value;

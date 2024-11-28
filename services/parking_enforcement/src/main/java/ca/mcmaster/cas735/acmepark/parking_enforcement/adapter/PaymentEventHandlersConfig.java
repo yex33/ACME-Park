@@ -1,8 +1,8 @@
 package ca.mcmaster.cas735.acmepark.parking_enforcement.adapter;
 
 import ca.mcmaster.cas735.acmepark.common.dtos.TransactionType;
-import ca.mcmaster.cas735.acmepark.parking_enforcement.dto.PaymentEvent;
-import ca.mcmaster.cas735.acmepark.parking_enforcement.dto.PaymentStatus;
+import ca.mcmaster.cas735.acmepark.common.dtos.PaymentEvent;
+import ca.mcmaster.cas735.acmepark.common.dtos.PaymentStatus;
 import ca.mcmaster.cas735.acmepark.parking_enforcement.ports.provided.FineManagement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

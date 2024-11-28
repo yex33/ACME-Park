@@ -1,6 +1,5 @@
-package ca.mcmaster.cas735.acmepark.parking_enforcement.dto;
+package ca.mcmaster.cas735.acmepark.common.dtos;
 
-import ca.mcmaster.cas735.acmepark.common.dtos.TransactionType;
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
