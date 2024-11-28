@@ -6,20 +6,25 @@ import ca.mcmaster.cas735.acmepark.parking_enforcement.dto.FineEvent;
 import ca.mcmaster.cas735.acmepark.parking_enforcement.ports.provided.FineManagement;
 import ca.mcmaster.cas735.acmepark.parking_enforcement.ports.provided.RuleManagement;
 import ca.mcmaster.cas735.acmepark.parking_enforcement.ports.required.FineTransactionRepository;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
 
-@AllArgsConstructor
 @Service
 @Slf4j
 public class FineManager implements FineManagement {
     private final FineTransactionRepository repository;
     private final RuleManagement ruleManagement;
+
+    @Autowired
+    public FineManager(FineTransactionRepository repository, RuleManagement ruleManagement) {
+        this.repository = repository;
+        this.ruleManagement = ruleManagement;
+    }
 
     @Override
     @Transactional
@@ -28,7 +33,7 @@ public class FineManager implements FineManagement {
                 .userId(fineEvent.getUserId())
                 .status(TransactionStatus.UNPAID)
                 .issuedOn(fineEvent.getIssuedOn())
-                .amount(ruleManagement.fineForViolating(fineEvent.getViolation())).build());
+                .amount(ruleManagement.getFineForViolating(fineEvent.getViolation())).build());
     }
 
     @Override

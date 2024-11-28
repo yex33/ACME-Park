@@ -18,6 +18,7 @@
         <module>services/member_identification</module>
         <module>services/parking_enforcement</module>
         <module>services/payment_processing</module>
+        <module>services/lot_management</module>
         <!-- Common DTO Module -->
         <module>common/dtos</module>
     </modules>

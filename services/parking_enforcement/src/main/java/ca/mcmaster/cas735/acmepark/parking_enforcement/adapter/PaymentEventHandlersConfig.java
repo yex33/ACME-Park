@@ -1,29 +1,32 @@
 package ca.mcmaster.cas735.acmepark.parking_enforcement.adapter;
 
+import ca.mcmaster.cas735.acmepark.common.dtos.TransactionStatus;
 import ca.mcmaster.cas735.acmepark.common.dtos.TransactionType;
-import ca.mcmaster.cas735.acmepark.parking_enforcement.dto.ChargeTransaction;
-import ca.mcmaster.cas735.acmepark.parking_enforcement.dto.PaymentEvent;
-import ca.mcmaster.cas735.acmepark.parking_enforcement.dto.PaymentStatus;
+import ca.mcmaster.cas735.acmepark.common.dtos.PaymentEvent;
 import ca.mcmaster.cas735.acmepark.parking_enforcement.ports.provided.FineManagement;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.function.Consumer;
 
-@AllArgsConstructor
 @Configuration
 public class PaymentEventHandlersConfig {
     private final FineManagement fineManagement;
+
+    @Autowired
+    public PaymentEventHandlersConfig(FineManagement fineManagement) {
+        this.fineManagement = fineManagement;
+    }
 
     @Bean
     public Consumer<PaymentEvent> paymentEventConsumer() {
         return paymentEvent -> {
             var fineTransactionIds = paymentEvent.getTransactions().stream()
-                    .filter(chargeTransaction -> chargeTransaction.getTransactionType().equals(TransactionType.VIOLATION_FINE))
-                    .map(ChargeTransaction::getTransactionId)
+                    .filter(chargeReference -> chargeReference.getTransactionType().equals(TransactionType.VIOLATION_FINE))
+                    .map(chargeReference -> Long.valueOf(chargeReference.getTransactionId()))
                     .toList();
-            if (paymentEvent.getStatus().equals(PaymentStatus.SUCCESS)) {
+            if (paymentEvent.getStatus().equals(TransactionStatus.SUCCESS)) {
                 fineManagement.clearFines(fineTransactionIds);
             } else {
                 fineManagement.restoreFines(fineTransactionIds);

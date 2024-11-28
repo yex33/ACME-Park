@@ -1,34 +1,37 @@
 package ca.mcmaster.cas735.acmepark.parking_enforcement.business;
 
+import ca.mcmaster.cas735.acmepark.common.dtos.ChargeDto;
+import ca.mcmaster.cas735.acmepark.common.dtos.PaymentRequest;
 import ca.mcmaster.cas735.acmepark.common.dtos.TransactionType;
-import ca.mcmaster.cas735.acmepark.parking_enforcement.dto.ChargeDto;
-import ca.mcmaster.cas735.acmepark.parking_enforcement.dto.Invoice;
 import ca.mcmaster.cas735.acmepark.parking_enforcement.ports.provided.ChargeEventHandler;
 import ca.mcmaster.cas735.acmepark.parking_enforcement.ports.provided.FineManagement;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.stream.Stream;
 
-@AllArgsConstructor
 @Service
 @Slf4j
 public class PaymentInitiator implements ChargeEventHandler {
     private final FineManagement fineManagement;
 
+    @Autowired
+    public PaymentInitiator(FineManagement fineManagement) {
+        this.fineManagement = fineManagement;
+    }
+
     @Override
-    public Invoice attachFines(Invoice invoice) {
-        var fineCharges = fineManagement.registerPendingPaymentFrom(invoice.getUser().getUserId())
-                .stream()
+    public PaymentRequest attachFines(PaymentRequest paymentRequest) {
+        var fineCharges = fineManagement.registerPendingPaymentFrom(paymentRequest.getUser().getUserId()).stream()
                 .map(fineTransaction -> ChargeDto.builder()
-                        .transactionId(String.valueOf(fineTransaction.getId()))
+                        .transactionId(fineTransaction.getId().toString())
                         .transactionType(TransactionType.VIOLATION_FINE)
                         .description("Parking Violation")
                         .amount(fineTransaction.getAmount())
                         .issuedOn(fineTransaction.getIssuedOn().toLocalDate()).build());
-        return Invoice.builder()
-                .user(invoice.getUser())
-                .charges(Stream.concat(invoice.getCharges().stream(), fineCharges).toList()).build();
+        return PaymentRequest.builder()
+                .user(paymentRequest.getUser())
+                .charges(Stream.concat(paymentRequest.getCharges().stream(), fineCharges).toList()).build();
     }
 }
