@@ -9,7 +9,23 @@ services:
     build:
       context: ../services/member_identification
     ports:
-      - "9080:9080"
+      - "9090:9090"
+    volumes:
+      - ./data:/data
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      service-registry:
+        condition: service_healthy
+
+  lot-management:
+    container_name: lot-management
+    build:
+      context: ../services/lot_management
+    ports:
+      - "9093:9093"
+    volumes:
+      - ./data:/data
     depends_on:
       rabbitmq:
         condition: service_healthy
