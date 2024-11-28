@@ -1,7 +1,7 @@
 package ca.mcmaster.cas735.acmepark.parking_enforcement.ports.provided;
 
-import ca.mcmaster.cas735.acmepark.parking_enforcement.dto.InvoiceDto;
+import ca.mcmaster.cas735.acmepark.common.dtos.PaymentRequest;
 
 public interface ChargeEventHandler {
-    InvoiceDto attachFines(InvoiceDto invoiceDto);
+    PaymentRequest attachFines(PaymentRequest paymentRequest);
 }

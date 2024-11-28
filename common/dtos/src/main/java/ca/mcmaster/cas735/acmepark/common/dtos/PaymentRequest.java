@@ -11,5 +11,5 @@ import java.util.List;
 @Jacksonized
 public class PaymentRequest {
     User user;
-    List<ChargeDto> transactions;
+    List<ChargeDto> charges;
 }

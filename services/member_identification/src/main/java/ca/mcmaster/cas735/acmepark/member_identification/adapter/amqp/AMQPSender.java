@@ -30,7 +30,7 @@ public class AMQPSender implements PaymentSender, GateManagement, MonitorDataSen
                 .user(User.builder()
                         .userId(UUID.fromString(memberFeeTransaction.getInitiatedBy()))
                         .userType(memberFeeTransaction.getUserType()).build())
-                .transactions(List.of(ChargeDto.builder()
+                .charges(List.of(ChargeDto.builder()
                         .transactionId(memberFeeTransaction.getTransactionId())
                         .transactionType(memberFeeTransaction.getTransactionType())
                         .description(memberFeeTransaction.getDescription())
