@@ -17,7 +17,7 @@ import java.util.UUID;
 public class VisitorRegistry implements VisitorManagement {
 
     private VisitorDataRepository database;
-    private GateManagement gateManager;
+    private GateOpener gateManager;
     private VoucherManagement voucherManager;
     private ParkingFeeManagement parkingFeeManager;
 
@@ -25,7 +25,7 @@ public class VisitorRegistry implements VisitorManagement {
     private Integer hourlyParkingFee = 1000;
 
     @Autowired
-    public VisitorRegistry(VisitorDataRepository database, GateManagement gateManager, VoucherManagement voucherManager, ParkingFeeManagement parkingFeeManager) {
+    public VisitorRegistry(VisitorDataRepository database, GateOpener gateManager, VoucherManagement voucherManager, ParkingFeeManagement parkingFeeManager) {
         this.database = database;
         this.gateManager = gateManager;
         this.voucherManager = voucherManager;
@@ -81,5 +81,7 @@ public class VisitorRegistry implements VisitorManagement {
         visitor.setExited(true);
 
         database.saveAndFlush(visitor);
+
+        // TODO: send payment
     }
 }

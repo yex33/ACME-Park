@@ -17,6 +17,7 @@
         <!-- Business Services -->
         <module>services/member_identification</module>
         <module>services/lot_management</module>
+        <module>services/visitor_identification</module>
         <!-- Common DTO Module -->
         <module>common/dtos</module>
     </modules>

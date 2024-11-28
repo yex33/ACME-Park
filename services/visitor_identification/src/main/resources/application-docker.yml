@@ -12,6 +12,8 @@ spring:
     init:
       mode: always
 
+  rabbitmq:
+    host: rabbitmq
 
 info:
   application:
