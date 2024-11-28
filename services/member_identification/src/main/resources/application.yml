@@ -22,11 +22,11 @@ spring:
         sendPermitSale-out-0:
           destination: monitor.event
 
-## logging level
-#logging.level:
-#  ca.mcmaster.cas735.acmepark.member_identification:
-#    adapter:  INFO # DEBUG for fine-grained trace
-#    business: INFO
+# logging level
+logging.level:
+  ca.mcmaster.cas735.acmepark.member_identification:
+    adapter:  INFO # DEBUG for fine-grained trace
+    business: INFO
 
 # Port used by the server
 server:
