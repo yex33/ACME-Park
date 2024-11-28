@@ -14,7 +14,7 @@ public class RuleManager implements RuleManagement {
     private final ParkingRuleRepository repository;
 
     @Override
-    public Integer fineForViolating(String violation) {
+    public Integer getFineForViolating(String violation) {
         return repository.findByName(violation)
                 .map(ParkingRule::getFineAmount)
                 .orElseThrow(() -> new RuntimeException("No rule found for violation: " + violation));

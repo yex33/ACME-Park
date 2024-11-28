@@ -28,7 +28,7 @@ public class FineManager implements FineManagement {
                 .userId(fineEvent.getUserId())
                 .status(TransactionStatus.UNPAID)
                 .issuedOn(fineEvent.getIssuedOn())
-                .amount(ruleManagement.fineForViolating(fineEvent.getViolation())).build());
+                .amount(ruleManagement.getFineForViolating(fineEvent.getViolation())).build());
     }
 
     @Override

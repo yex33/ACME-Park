@@ -1,6 +1,5 @@
-package ca.mcmaster.cas735.acmepark.parking_enforcement;
+package ca.mcmaster.cas735.acmepark.parking_enforcement.business;
 
-import ca.mcmaster.cas735.acmepark.parking_enforcement.business.RuleManager;
 import ca.mcmaster.cas735.acmepark.parking_enforcement.business.entities.ParkingRule;
 import ca.mcmaster.cas735.acmepark.parking_enforcement.ports.required.ParkingRuleRepository;
 import org.junit.jupiter.api.BeforeAll;
@@ -13,10 +12,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatRuntimeException;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class ParkingEnforcementApplicationTests {
+class RuleManagerTests {
     @InjectMocks
     RuleManager ruleManager;
 
@@ -28,7 +28,7 @@ class ParkingEnforcementApplicationTests {
 
     @BeforeAll
     static void setUp() {
-        violation = "you should not park";
+        violation = "some parking violation";
         parkingRule = ParkingRule.builder()
                 .parkingRuleId(1L)
                 .name(violation)
@@ -36,9 +36,15 @@ class ParkingEnforcementApplicationTests {
     }
 
     @Test
-    void contextLoads() {
+    void givenViolation_whenGetFineForViolating_thenReturnFine() {
         when(parkingRuleRepository.findByName(violation)).thenReturn(Optional.of(parkingRule));
-        assertThat(ruleManager.fineForViolating(violation)).isEqualTo(parkingRule.getFineAmount());
+        assertThat(ruleManager.getFineForViolating(violation)).isEqualTo(parkingRule.getFineAmount());
+    }
+
+    @Test
+    void givenNonExistingViolation_whenGetFineForViolating_thenThrowRuntimeException() {
+        when(parkingRuleRepository.findByName(violation)).thenReturn(Optional.of(parkingRule));
+        assertThatRuntimeException().isThrownBy(() -> ruleManager.getFineForViolating("non existing" + violation));
     }
 
 }
