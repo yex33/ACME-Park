@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 public class MemberFeeCreationData {
     private String organizationId;
     private UserType userType;
-    private int amount;
+    private Integer amount;
     private LocalDateTime timestamp;
     private String description;
     private String associatedPermitId;

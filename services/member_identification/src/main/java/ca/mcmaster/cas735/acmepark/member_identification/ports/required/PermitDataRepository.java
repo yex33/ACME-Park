@@ -10,5 +10,4 @@ public interface PermitDataRepository extends JpaRepository<Permit, String> {
     Boolean existsByOrganizationId(String organizationId);
     Permit findPermitByTransponderId(String transponderId);
     Permit findPermitByPermitId(String permitId);
-    void updatePermitByPermitId(String permitId, Permit permit);
 }

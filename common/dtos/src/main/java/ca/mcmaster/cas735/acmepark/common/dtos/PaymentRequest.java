@@ -11,7 +11,12 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PaymentRequest {
+    // ID of the user or entity initiating the transaction
     public String initiator;
+
+    // The user type of the initiator
+    public UserType userType;
+
     public List<BaseTransaction> transactions;
 
     public String toJSONString() {

@@ -31,3 +31,9 @@ build/
 
 ### VS Code ###
 .vscode/
+
+clients/Pipfile
+deployment/data/
+services/lot_management/.mvn
+services/lot_management/mvnw
+services/lot_management/mvnw.cmd
