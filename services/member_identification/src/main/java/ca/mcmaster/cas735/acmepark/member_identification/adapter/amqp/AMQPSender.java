@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,14 +19,11 @@ import java.util.stream.Collectors;
 
 @Service
 public class AMQPSender implements PaymentSender, GateManagement, MonitorDataSender {
-    private final RabbitTemplate rabbitTemplate;
-
-    @Value("${app.custom.messaging.payment-processing-exchange}") private String paymentExchange;
-    @Value("${app.custom.messaging.gate-access-exchange}") private String gateExchange;
+    final StreamBridge streamBridge;
 
     @Autowired
-    public AMQPSender(RabbitTemplate rabbitTemplate) {
-        this.rabbitTemplate = rabbitTemplate;
+    public AMQPSender(StreamBridge streamBridge) {
+        this.streamBridge = streamBridge;
     }
 
     @Override
@@ -37,14 +35,12 @@ public class AMQPSender implements PaymentSender, GateManagement, MonitorDataSen
             return baseTransaction;
         }).collect(Collectors.toList());
 
-        String routingKey = "payment.request.member";
-
-        rabbitTemplate.convertAndSend(paymentExchange, routingKey, paymentRequest.toJSONString());
+        streamBridge.send("sendTransaction-out-0", paymentRequest);
     }
 
     @Override
     public void requestGateOpen(AccessGateRequest request) {
-        rabbitTemplate.convertAndSend(gateExchange, "*", toJSONString(request));
+        streamBridge.send("requestGateOpen-out-0", request);
     }
 
     @Override

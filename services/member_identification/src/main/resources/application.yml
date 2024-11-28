@@ -12,6 +12,13 @@ spring:
   rabbitmq:
     username: admin
     password: cas735
+  cloud:
+    stream:
+      bindings:
+        sendTransaction-out-0:
+          destination: charge.event
+        requestGateOpen-out-0:
+          destination: access.receiver
 
 ## logging level
 #logging.level:
@@ -29,6 +36,7 @@ app:
       payment-processing-exchange: charge.event
       payment-success-queue: payment.success.member.queue
       gate-access-exchange: access.receiver
+
 
 # Start management infrastructure for health check and general infos
 management:

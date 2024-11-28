@@ -20,7 +20,7 @@ public class AMQPListener {
 
     @RabbitListener(bindings = @QueueBinding(
             value = @Queue(value = "${app.custom.messaging.payment-success-queue}", durable = "true"),
-            exchange = @Exchange(value = "${app.custom.messaging.payment-processing-exchange}", type = "topic"),
+            exchange = @Exchange(value = "aaa", type = "topic"),
             key = "*"))
     public void handlePaymentSuccess(String data) {
         this.memberFeeManager.completeTransaction(data);
