@@ -1,6 +1,9 @@
 package ca.mcmaster.cas735.acmepark.payment_processing.business;
 
+import ca.mcmaster.cas735.acmepark.common.dtos.*;
 import ca.mcmaster.cas735.acmepark.payment_processing.business.entities.*;
+import ca.mcmaster.cas735.acmepark.payment_processing.business.entities.User;
+import ca.mcmaster.cas735.acmepark.payment_processing.business.entities.UserType;
 import ca.mcmaster.cas735.acmepark.payment_processing.dto.*;
 import ca.mcmaster.cas735.acmepark.payment_processing.ports.provided.PaymentRequestHandling;
 import ca.mcmaster.cas735.acmepark.payment_processing.ports.required.Banking;
