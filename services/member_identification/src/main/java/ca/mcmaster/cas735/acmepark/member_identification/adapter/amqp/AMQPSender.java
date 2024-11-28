@@ -44,7 +44,7 @@ public class AMQPSender implements PaymentSender, GateManagement, MonitorDataSen
 
     @Override
     public void requestGateOpen(AccessGateRequest request) {
-        rabbitTemplate.convertAndSend(gateExchange, "", toJSONString(request));
+        rabbitTemplate.convertAndSend(gateExchange, "*", toJSONString(request));
     }
 
     @Override
