@@ -9,6 +9,9 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     defer-datasource-initialization: true
+  rabbitmq:
+    username: admin
+    password: cas735
 
 ## logging level
 #logging.level:
