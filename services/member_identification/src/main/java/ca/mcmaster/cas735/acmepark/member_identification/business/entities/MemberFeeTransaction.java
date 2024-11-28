@@ -1,13 +1,10 @@
 package ca.mcmaster.cas735.acmepark.member_identification.business.entities;
 
-import ca.mcmaster.cas735.acmepark.common.dtos.BaseTransaction;
 import ca.mcmaster.cas735.acmepark.common.dtos.TransactionStatus;
 import ca.mcmaster.cas735.acmepark.common.dtos.TransactionType;
 import ca.mcmaster.cas735.acmepark.common.dtos.UserType;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 

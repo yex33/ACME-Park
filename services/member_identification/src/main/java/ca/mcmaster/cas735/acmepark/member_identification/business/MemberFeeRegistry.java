@@ -8,12 +8,15 @@ import ca.mcmaster.cas735.acmepark.member_identification.ports.provided.MemberFe
 import ca.mcmaster.cas735.acmepark.member_identification.ports.provided.MonitorDataSender;
 import ca.mcmaster.cas735.acmepark.member_identification.ports.provided.TransponderManagement;
 import ca.mcmaster.cas735.acmepark.member_identification.ports.required.MemberFeeTransactionRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@Slf4j
 public class MemberFeeRegistry implements MemberFeeManagement {
 
     private final MemberFeeTransactionRepository database;
@@ -29,6 +32,8 @@ public class MemberFeeRegistry implements MemberFeeManagement {
 
     @Override
     public MemberFeeTransaction createTransaction(MemberFeeCreationData request) {
+        log.info("Creating a new member fee transaction with request data: {}", request);
+
         MemberFeeTransaction transaction = new MemberFeeTransaction();
         transaction.setTransactionId(UUID.randomUUID().toString());
         transaction.setTransactionType(TransactionType.MEMBER_FEE);
@@ -39,25 +44,29 @@ public class MemberFeeRegistry implements MemberFeeManagement {
         transaction.setTimestamp(request.getTimestamp());
         transaction.setDescription(request.getDescription());
         transaction.setAssociatedPermitId(request.getAssociatedPermitId());
+
+        log.info("Generated transaction details: {}", transaction);
+
         database.saveAndFlush(transaction);
+        log.info("Transaction saved successfully with ID: {}", transaction.getTransactionId());
 
         return transaction;
     }
 
     @Override
     public void completeTransaction(String transactionId) {
-        MemberFeeTransaction transaction = database.findByTransactionId(transactionId);
+        log.info("Completing transaction with ID: {}", transactionId);
 
-        if (transaction == null) { return; }
+        database.findByTransactionId(transactionId).ifPresent(transaction -> {
 
-        transaction.setTransactionStatus(TransactionStatus.SUCCESS);
+            transaction.setTransactionStatus(TransactionStatus.SUCCESS);
+            database.saveAndFlush(transaction);
+            log.info("Transaction status updated to SUCCESS for ID: {}", transactionId);
 
-        database.saveAndFlush(transaction);
+            transponderManager.issueTransponderByPermitId(transaction.getAssociatedPermitId());
+            log.info("Issued transponder for permit ID: {}", transaction.getAssociatedPermitId());
 
-        transponderManager.issueTransponderByPermitId(transaction.getAssociatedPermitId());
-
-        monitorDataSender.sendPermitSale(transaction.getAssociatedPermitId());
+            monitorDataSender.sendPermitSale(transaction.getAssociatedPermitId());
+        });
     }
-
-
 }

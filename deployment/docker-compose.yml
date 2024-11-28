@@ -45,3 +45,17 @@ services:
         condition: service_healthy
       service-registry:
         condition: service_healthy
+
+  parking_enforcement:
+    container_name: parking-enforcement
+    build:
+      context: ../services/parking_enforcement
+    ports:
+      - "9080:9080"
+    volumes:
+      - ./data:/data
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      service-registry:
+        condition: service_healthy

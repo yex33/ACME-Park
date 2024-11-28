@@ -1,4 +1,4 @@
-package ca.mcmaster.cas735.acmepark.lot_management.dtos;
+package ca.mcmaster.cas735.acmepark.common.dtos;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
