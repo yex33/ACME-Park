@@ -1,15 +1,16 @@
 package ca.mcmaster.cas735.acmepark.payment_processing.dto;
 
+import ca.mcmaster.cas735.acmepark.common.dtos.UserType;
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 
-import java.util.List;
+import java.util.UUID;
 
 @Value
 @Builder
 @Jacksonized
-public class InvoiceDto {
-    UserDto user;
-    List<ChargeDto> charges;
+public class User {
+    UUID userId;
+    UserType userType;
 }

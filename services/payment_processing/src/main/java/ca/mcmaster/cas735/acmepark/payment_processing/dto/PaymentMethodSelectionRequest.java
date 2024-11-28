@@ -10,7 +10,7 @@ import java.util.List;
 @Builder
 @Jacksonized
 public class PaymentMethodSelectionRequest {
-    InvoiceDto invoice;
+    PaymentRequest invoice;
     Long invoiceId;
     List<PaymentMethod> paymentMethods;
 }

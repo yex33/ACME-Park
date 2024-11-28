@@ -37,25 +37,25 @@ public class PaymentManager implements PaymentRequestHandling {
 
     @Override
     @Transactional
-    public PaymentMethodSelectionRequest attachAvailablePaymentMethods(InvoiceDto invoiceDto) {
+    public PaymentMethodSelectionRequest attachAvailablePaymentMethods(PaymentRequest paymentRequest) {
         var invoice = Invoice.builder()
                 .user(User.builder()
-                        .id(invoiceDto.getUser().getUserId())
-                        .userType(UserType.valueOf(invoiceDto.getUser().getUserType().toString())).build())
-                .charges(invoiceDto.getCharges().stream()
+                        .id(paymentRequest.getUser().getUserId())
+                        .userType(UserType.valueOf(paymentRequest.getUser().getUserType().toString())).build())
+                .charges(paymentRequest.getCharges().stream()
                         .map(chargeDto -> Charge.builder()
                                 .transactionId(chargeDto.getTransactionId())
                                 .type(ChargeType.valueOf(chargeDto.getTransactionType().toString()))
                                 .description(chargeDto.getDescription())
                                 .amount(chargeDto.getAmount())
                                 .issuedOn(chargeDto.getIssuedOn()).build()).toList())
-                .total(invoiceDto.getCharges().stream()
+                .total(paymentRequest.getCharges().stream()
                         .map(ChargeDto::getAmount)
                         .reduce(0, Integer::sum)).build();
         repository.save(invoice);
 
         return PaymentMethodSelectionRequest.builder()
-                .invoice(invoiceDto)
+                .invoice(paymentRequest)
                 .invoiceId(invoice.getId())
                 .paymentMethods(PAYMENT_METHODS_FOR.get(invoice.getUser().getUserType())).build();
     }
@@ -69,9 +69,9 @@ public class PaymentManager implements PaymentRequestHandling {
             case RESERVE_IN_PAYSLIP -> paySlipManagement.withholdCredit(invoice.getUser().getId(), invoice.getTotal());
         };
         return PaymentEvent.builder()
-                .status(success ? PaymentStatus.SUCCESS : PaymentStatus.FAILED)
+                .status(success ? TransactionStatus.SUCCESS : TransactionStatus.FAILED)
                 .transactions(invoice.getCharges().stream()
-                        .map(charge -> ChargeTransaction.builder()
+                        .map(charge -> ChargeReference.builder()
                                 .transactionId(charge.getTransactionId())
                                 .transactionType(charge.getType().getTransactionType()).build())
                         .toList()).build();

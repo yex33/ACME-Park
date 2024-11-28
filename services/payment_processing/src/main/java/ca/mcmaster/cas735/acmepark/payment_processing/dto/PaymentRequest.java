@@ -1,14 +1,15 @@
 package ca.mcmaster.cas735.acmepark.payment_processing.dto;
 
-import ca.mcmaster.cas735.acmepark.common.dtos.TransactionType;
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 
+import java.util.List;
+
 @Value
 @Builder
 @Jacksonized
-public class ChargeTransaction {
-    String transactionId;
-    TransactionType transactionType;
+public class PaymentRequest {
+    User user;
+    List<ChargeDto> charges;
 }
