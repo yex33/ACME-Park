@@ -1,21 +1,18 @@
 package ca.mcmaster.cas735.acmepark.member_identification.adapter.amqp;
 
 import ca.mcmaster.cas735.acmepark.common.dtos.AccessGateRequest;
-import ca.mcmaster.cas735.acmepark.common.dtos.BaseTransaction;
+import ca.mcmaster.cas735.acmepark.common.dtos.ChargeDto;
 import ca.mcmaster.cas735.acmepark.common.dtos.PaymentRequest;
 import ca.mcmaster.cas735.acmepark.member_identification.business.entities.MemberFeeTransaction;
 import ca.mcmaster.cas735.acmepark.member_identification.ports.provided.GateManagement;
 import ca.mcmaster.cas735.acmepark.member_identification.ports.provided.MonitorDataSender;
 import ca.mcmaster.cas735.acmepark.member_identification.ports.provided.PaymentSender;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class AMQPSender implements PaymentSender, GateManagement, MonitorDataSender {
@@ -27,13 +24,15 @@ public class AMQPSender implements PaymentSender, GateManagement, MonitorDataSen
     }
 
     @Override
-    public void sendTransaction(MemberFeeTransaction transaction) {
+    public void sendTransaction(MemberFeeTransaction memberFeeTransaction) {
         PaymentRequest paymentRequest = new PaymentRequest();
-        paymentRequest.initiator = transaction.getInitiatedBy();
-        paymentRequest.transactions = List.of(transaction).stream().map( t -> {
-            BaseTransaction baseTransaction = new BaseTransaction(t.getTransactionId(), t.getTransactionType(), t.getTransactionStatus(), t.getTimestamp(), t.getAmount(), t.getInitiatedBy(), t.getUserType(), t.getDescription());
-            return baseTransaction;
-        }).collect(Collectors.toList());
+        paymentRequest.initiator = memberFeeTransaction.getInitiatedBy();
+        paymentRequest.transactions = List.of(ChargeDto.builder()
+                    .transactionId(memberFeeTransaction.getTransactionId())
+                    .transactionType(memberFeeTransaction.getTransactionType())
+                    .description(memberFeeTransaction.getDescription())
+                    .amount(memberFeeTransaction.getAmount())
+                    .issuedOn(memberFeeTransaction.getTimestamp().toLocalDate()).build());
 
         streamBridge.send("sendTransaction-out-0", paymentRequest);
     }

@@ -17,7 +17,7 @@ public class PaymentRequest {
     // The user type of the initiator
     public UserType userType;
 
-    public List<BaseTransaction> transactions;
+    public List<ChargeDto> transactions;
 
     public String toJSONString() {
         ObjectMapper mapper= new ObjectMapper();
