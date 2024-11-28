@@ -46,6 +46,6 @@ public class AMQPSender implements PaymentSender, GateManagement, MonitorDataSen
 
     @Override
     public void sendPermitSale(String permitId) {
-
+        streamBridge.send("sendPermitSale-out-0", permitId);
     }
 }

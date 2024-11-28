@@ -10,6 +10,6 @@ import java.util.List;
 @Builder
 @Jacksonized
 public class PaymentEvent {
-    PaymentStatus status;
+    TransactionStatus status;
     List<ChargeReference> transactions;
 }

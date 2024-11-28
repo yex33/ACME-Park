@@ -19,6 +19,8 @@ spring:
           destination: charge.event
         requestGateOpen-out-0:
           destination: access.receiver
+        sendPermitSale-out-0:
+          destination: monitor.event
 
 ## logging level
 #logging.level:

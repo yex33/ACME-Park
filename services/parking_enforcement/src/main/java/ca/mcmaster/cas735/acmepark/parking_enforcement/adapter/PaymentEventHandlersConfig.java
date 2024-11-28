@@ -1,8 +1,8 @@
 package ca.mcmaster.cas735.acmepark.parking_enforcement.adapter;
 
+import ca.mcmaster.cas735.acmepark.common.dtos.TransactionStatus;
 import ca.mcmaster.cas735.acmepark.common.dtos.TransactionType;
 import ca.mcmaster.cas735.acmepark.common.dtos.PaymentEvent;
-import ca.mcmaster.cas735.acmepark.common.dtos.PaymentStatus;
 import ca.mcmaster.cas735.acmepark.parking_enforcement.ports.provided.FineManagement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -26,7 +26,7 @@ public class PaymentEventHandlersConfig {
                     .filter(chargeReference -> chargeReference.getTransactionType().equals(TransactionType.VIOLATION_FINE))
                     .map(chargeReference -> Long.valueOf(chargeReference.getTransactionId()))
                     .toList();
-            if (paymentEvent.getStatus().equals(PaymentStatus.SUCCESS)) {
+            if (paymentEvent.getStatus().equals(TransactionStatus.SUCCESS)) {
                 fineManagement.clearFines(fineTransactionIds);
             } else {
                 fineManagement.restoreFines(fineTransactionIds);

@@ -11,6 +11,7 @@ import ca.mcmaster.cas735.acmepark.member_identification.ports.required.MemberFe
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -46,18 +47,12 @@ public class MemberFeeRegistry implements MemberFeeManagement {
 
     @Override
     public void completeTransaction(String transactionId) {
-        MemberFeeTransaction transaction = database.findByTransactionId(transactionId);
-
-        if (transaction == null) { return; }
-
-        transaction.setTransactionStatus(TransactionStatus.SUCCESS);
-
-        database.saveAndFlush(transaction);
-
-        transponderManager.issueTransponderByPermitId(transaction.getAssociatedPermitId());
-
-        monitorDataSender.sendPermitSale(transaction.getAssociatedPermitId());
+        database.findByTransactionId(transactionId)
+                .ifPresent(transaction -> {
+                    transaction.setTransactionStatus(TransactionStatus.SUCCESS);
+                    database.saveAndFlush(transaction);
+                    transponderManager.issueTransponderByPermitId(transaction.getAssociatedPermitId());
+                    monitorDataSender.sendPermitSale(transaction.getAssociatedPermitId());
+                });
     }
-
-
 }
