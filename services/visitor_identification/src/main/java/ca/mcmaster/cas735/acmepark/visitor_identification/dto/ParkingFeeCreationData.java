@@ -1,6 +1,5 @@
 package ca.mcmaster.cas735.acmepark.visitor_identification.dto;
 
-import ca.mcmaster.cas735.acmepark.common.dtos.UserType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,5 +12,7 @@ import java.time.LocalDateTime;
 public class ParkingFeeCreationData {
     private String visitorId;
     private Integer amount;
+    private String gateId;
+    private String licensePlate;
     private LocalDateTime timestamp;
 }

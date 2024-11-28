@@ -4,5 +4,5 @@ import ca.mcmaster.cas735.acmepark.visitor_identification.dto.ParkingFeeCreation
 
 public interface ParkingFeeManagement {
     void issueParkingFee(ParkingFeeCreationData feeData);
-    void parkingFeeStatusChanged();
+    void handleParkingFeeStatusChanged(String transactionId);
 }

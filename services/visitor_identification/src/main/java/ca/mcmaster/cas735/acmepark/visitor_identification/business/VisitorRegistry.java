@@ -3,7 +3,11 @@ package ca.mcmaster.cas735.acmepark.visitor_identification.business;
 import ca.mcmaster.cas735.acmepark.common.dtos.AccessGateRequest;
 import ca.mcmaster.cas735.acmepark.common.dtos.UserType;
 import ca.mcmaster.cas735.acmepark.visitor_identification.business.entities.Visitor;
-import ca.mcmaster.cas735.acmepark.visitor_identification.ports.provided.*;
+import ca.mcmaster.cas735.acmepark.visitor_identification.dto.ParkingFeeCreationData;
+import ca.mcmaster.cas735.acmepark.visitor_identification.ports.provided.GateOpener;
+import ca.mcmaster.cas735.acmepark.visitor_identification.ports.provided.ParkingFeeManagement;
+import ca.mcmaster.cas735.acmepark.visitor_identification.ports.provided.VisitorManagement;
+import ca.mcmaster.cas735.acmepark.visitor_identification.ports.provided.VoucherManagement;
 import ca.mcmaster.cas735.acmepark.visitor_identification.ports.required.VisitorDataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,13 +20,13 @@ import java.util.UUID;
 @Service
 public class VisitorRegistry implements VisitorManagement {
 
-    private VisitorDataRepository database;
-    private GateOpener gateManager;
-    private VoucherManagement voucherManager;
-    private ParkingFeeManagement parkingFeeManager;
+    private final VisitorDataRepository database;
+    private final GateOpener gateManager;
+    private final VoucherManagement voucherManager;
+    private final ParkingFeeManagement parkingFeeManager;
 
     // Hourly parking fee is $10.00
-    private Integer hourlyParkingFee = 1000;
+    private static final Integer HOURLY_PARKING_FEE = 1000;
 
     @Autowired
     public VisitorRegistry(VisitorDataRepository database, GateOpener gateManager, VoucherManagement voucherManager, ParkingFeeManagement parkingFeeManager) {
@@ -37,9 +41,7 @@ public class VisitorRegistry implements VisitorManagement {
         // Find invalid visitor records, and delete them
         List<Visitor> invalidRecords = database.findVisitorsByLicensePlateAndExitedFalse(licensePlate);
 
-        invalidRecords.forEach(r -> {
-            database.deleteVisitorByVisitorId(r.getVisitorId());
-        });
+        invalidRecords.forEach(r -> database.deleteVisitorByVisitorId(r.getVisitorId()));
 
         Visitor visitor = new Visitor();
         visitor.setVisitorId(UUID.randomUUID().toString());
@@ -60,7 +62,7 @@ public class VisitorRegistry implements VisitorManagement {
 
     @Override
     public void exit(String visitorId, String licensePlate, String voucherId) {
-        Integer parkingFee = 0;
+        int parkingFee = 0;
 
         Visitor visitor = database.findVisitorByVisitorId(visitorId);
 
@@ -74,7 +76,7 @@ public class VisitorRegistry implements VisitorManagement {
                 hours++;
             }
 
-            parkingFee = Math.toIntExact(hours) * this.hourlyParkingFee;
+            parkingFee = Math.toIntExact(hours) * HOURLY_PARKING_FEE;
         }
 
         visitor.setExitTime(LocalDateTime.now());
@@ -82,6 +84,11 @@ public class VisitorRegistry implements VisitorManagement {
 
         database.saveAndFlush(visitor);
 
-        // TODO: send payment
+        ParkingFeeCreationData feeData = new ParkingFeeCreationData();
+        feeData.setVisitorId(visitorId);
+        feeData.setTimestamp(LocalDateTime.now());
+        feeData.setAmount(parkingFee);
+
+        parkingFeeManager.issueParkingFee(feeData);
     }
 }

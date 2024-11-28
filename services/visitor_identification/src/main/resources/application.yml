@@ -12,24 +12,26 @@ spring:
   rabbitmq:
     username: admin
     password: cas735
+  cloud:
+    stream:
+      bindings:
+        sendTransaction-out-0:
+          destination: charge.event
+        requestGateOpen-out-0:
+          destination: access.receiver
+        exitGateOpen-out-0:
+          destination: exit
 
-## logging level
-#logging.level:
-#  ca.mcmaster.cas735.acmepark.member_identification:
-#    adapter:  INFO # DEBUG for fine-grained trace
-#    business: INFO
+# logging level
+logging.level:
+  ca.mcmaster.cas735.acmepark.visitor_identification:
+    adapter:  INFO # DEBUG for fine-grained trace
+    business: INFO
 
 # Port used by the server
 server:
   port: 9091
 
-app:
-  custom:
-    messaging:
-      payment-processing-exchange: payment.processing
-      payment-success-queue: payment.success.member.queue
-      gate-access-exchange: access.receiver
-      exit-exchange: exit
 
 # Start management infrastructure for health check and general infos
 management:

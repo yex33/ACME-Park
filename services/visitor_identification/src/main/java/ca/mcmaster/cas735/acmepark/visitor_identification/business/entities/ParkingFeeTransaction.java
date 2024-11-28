@@ -1,6 +1,5 @@
 package ca.mcmaster.cas735.acmepark.visitor_identification.business.entities;
 
-import ca.mcmaster.cas735.acmepark.common.dtos.BaseTransaction;
 import ca.mcmaster.cas735.acmepark.common.dtos.TransactionStatus;
 import ca.mcmaster.cas735.acmepark.common.dtos.TransactionType;
 import ca.mcmaster.cas735.acmepark.common.dtos.UserType;
@@ -34,5 +33,9 @@ public class ParkingFeeTransaction {
 
     // Description or purpose of the transaction
     private String description;
+
+    private String gateId;
+
+    private String licensePlate;
 
 }
