@@ -3,16 +3,17 @@ package ca.mcmaster.cas735.acmepark.member_identification.adapter.amqp;
 import ca.mcmaster.cas735.acmepark.common.dtos.AccessGateRequest;
 import ca.mcmaster.cas735.acmepark.common.dtos.ChargeDto;
 import ca.mcmaster.cas735.acmepark.common.dtos.PaymentRequest;
+import ca.mcmaster.cas735.acmepark.common.dtos.User;
 import ca.mcmaster.cas735.acmepark.member_identification.business.entities.MemberFeeTransaction;
 import ca.mcmaster.cas735.acmepark.member_identification.ports.provided.GateManagement;
 import ca.mcmaster.cas735.acmepark.member_identification.ports.provided.MonitorDataSender;
 import ca.mcmaster.cas735.acmepark.member_identification.ports.provided.PaymentSender;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class AMQPSender implements PaymentSender, GateManagement, MonitorDataSender {
@@ -25,15 +26,16 @@ public class AMQPSender implements PaymentSender, GateManagement, MonitorDataSen
 
     @Override
     public void sendTransaction(MemberFeeTransaction memberFeeTransaction) {
-        PaymentRequest paymentRequest = new PaymentRequest();
-        paymentRequest.initiator = memberFeeTransaction.getInitiatedBy();
-        paymentRequest.transactions = List.of(ChargeDto.builder()
-                    .transactionId(memberFeeTransaction.getTransactionId())
-                    .transactionType(memberFeeTransaction.getTransactionType())
-                    .description(memberFeeTransaction.getDescription())
-                    .amount(memberFeeTransaction.getAmount())
-                    .issuedOn(memberFeeTransaction.getTimestamp().toLocalDate()).build());
-
+        PaymentRequest paymentRequest = PaymentRequest.builder()
+                .user(User.builder()
+                        .userId(UUID.fromString(memberFeeTransaction.getInitiatedBy()))
+                        .userType(memberFeeTransaction.getUserType()).build())
+                .transactions(List.of(ChargeDto.builder()
+                        .transactionId(memberFeeTransaction.getTransactionId())
+                        .transactionType(memberFeeTransaction.getTransactionType())
+                        .description(memberFeeTransaction.getDescription())
+                        .amount(memberFeeTransaction.getAmount())
+                        .issuedOn(memberFeeTransaction.getTimestamp().toLocalDate()).build())).build();
         streamBridge.send("sendTransaction-out-0", paymentRequest);
     }
 
@@ -45,14 +47,5 @@ public class AMQPSender implements PaymentSender, GateManagement, MonitorDataSen
     @Override
     public void sendPermitSale(String permitId) {
 
-    }
-
-    private String toJSONString(Object object) {
-        ObjectMapper mapper= new ObjectMapper();
-        try {
-            return mapper.writeValueAsString(object);
-        } catch (Exception e){
-            throw new RuntimeException(e);
-        }
     }
 }
