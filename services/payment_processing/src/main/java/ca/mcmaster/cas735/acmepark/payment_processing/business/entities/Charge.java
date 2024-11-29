@@ -1,5 +1,6 @@
 package ca.mcmaster.cas735.acmepark.payment_processing.business.entities;
 
+import ca.mcmaster.cas735.acmepark.common.dtos.TransactionType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,7 +21,7 @@ public class Charge {
     String transactionId;
 
     @Enumerated(EnumType.STRING)
-    ChargeType type;
+    TransactionType type;
 
     String description;
 

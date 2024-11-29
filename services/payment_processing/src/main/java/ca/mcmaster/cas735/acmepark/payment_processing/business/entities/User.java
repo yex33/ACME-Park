@@ -1,5 +1,6 @@
 package ca.mcmaster.cas735.acmepark.payment_processing.business.entities;
 
+import ca.mcmaster.cas735.acmepark.common.dtos.UserType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;

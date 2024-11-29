@@ -3,7 +3,6 @@ package ca.mcmaster.cas735.acmepark.payment_processing.business;
 import ca.mcmaster.cas735.acmepark.common.dtos.*;
 import ca.mcmaster.cas735.acmepark.payment_processing.business.entities.*;
 import ca.mcmaster.cas735.acmepark.payment_processing.business.entities.User;
-import ca.mcmaster.cas735.acmepark.payment_processing.business.entities.UserType;
 import ca.mcmaster.cas735.acmepark.payment_processing.dto.*;
 import ca.mcmaster.cas735.acmepark.payment_processing.ports.provided.PaymentRequestHandling;
 import ca.mcmaster.cas735.acmepark.payment_processing.ports.required.Banking;
@@ -44,11 +43,11 @@ public class PaymentManager implements PaymentRequestHandling {
         var invoice = Invoice.builder()
                 .user(User.builder()
                         .id(paymentRequest.getUser().getUserId())
-                        .userType(UserType.valueOf(paymentRequest.getUser().getUserType().toString())).build())
+                        .userType(paymentRequest.getUser().getUserType()).build())
                 .charges(paymentRequest.getCharges().stream()
                         .map(chargeDto -> Charge.builder()
                                 .transactionId(chargeDto.getTransactionId())
-                                .type(ChargeType.valueOf(chargeDto.getTransactionType().toString()))
+                                .type(chargeDto.getTransactionType())
                                 .description(chargeDto.getDescription())
                                 .amount(chargeDto.getAmount())
                                 .issuedOn(chargeDto.getIssuedOn()).build()).toList())
@@ -76,7 +75,7 @@ public class PaymentManager implements PaymentRequestHandling {
                 .transactions(invoice.getCharges().stream()
                         .map(charge -> ChargeReference.builder()
                                 .transactionId(charge.getTransactionId())
-                                .transactionType(charge.getType().getTransactionType()).build())
+                                .transactionType(charge.getType()).build())
                         .toList()).build();
     }
 }
