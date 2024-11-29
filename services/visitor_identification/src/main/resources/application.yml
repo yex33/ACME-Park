@@ -14,7 +14,8 @@ spring:
     password: cas735
   cloud:
     function:
-      definition: handlePaymentStatusChanged
+      definition:
+        - handlePaymentStatusChanged
     stream:
       bindings:
         sendTransaction-out-0:

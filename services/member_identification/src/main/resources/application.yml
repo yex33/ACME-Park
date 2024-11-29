@@ -14,7 +14,8 @@ spring:
     password: cas735
   cloud:
     function:
-      definition: handlePaymentStatusChanged
+      definition:
+        - handlePaymentSuccess
     stream:
       bindings:
         sendTransaction-out-0:
@@ -35,13 +36,6 @@ logging.level:
 # Port used by the server
 server:
   port: 9090
-
-app:
-  custom:
-    messaging:
-      payment-processing-exchange: charge.event
-      payment-success-queue: payment.success.member.queue
-      gate-access-exchange: access.receiver
 
 
 # Start management infrastructure for health check and general infos

@@ -65,7 +65,7 @@ services:
     build:
       context: ../services/payment_processing
     ports:
-      - "9080:9080"
+      - "9081:9080"
     volumes:
       - ./data:/data
     depends_on:
