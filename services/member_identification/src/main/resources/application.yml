@@ -21,6 +21,8 @@ spring:
           destination: access.receiver
         sendPermitSale-out-0:
           destination: monitor.event
+        handlePaymentSuccess-in-0:
+          destination: payment.event
 
 # logging level
 logging.level:

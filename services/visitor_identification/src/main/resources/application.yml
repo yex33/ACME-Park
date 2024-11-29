@@ -21,6 +21,8 @@ spring:
           destination: access.receiver
         exitGateOpen-out-0:
           destination: exit
+        handlePaymentStatusChanged-in-0:
+          destination: payment.event
 
 # logging level
 logging.level:
