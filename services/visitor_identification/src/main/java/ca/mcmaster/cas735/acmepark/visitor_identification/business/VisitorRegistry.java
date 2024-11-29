@@ -112,6 +112,8 @@ public class VisitorRegistry implements VisitorManagement {
         feeData.setVisitorId(visitorId);
         feeData.setTimestamp(LocalDateTime.now());
         feeData.setAmount(parkingFee);
+        feeData.setGateId(visitor.getGateId());
+        feeData.setLicensePlate(visitor.getLicensePlate());
 
         parkingFeeManager.issueParkingFee(feeData);
         log.info("Parking fee issued: {}", feeData);

@@ -27,7 +27,7 @@ public class VisitorAccessController {
     @PostMapping(value = "/")
     @Operation(description = "Request visitor access in parking lots.")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void access(VisitorAccessData data) {
+    public void access(@RequestBody VisitorAccessData data) {
         log.info("Received visitor access request: {}", data);
         visitorManager.requestAccess(data.getLicensePlate(), data.getGateId());
     }
@@ -36,7 +36,7 @@ public class VisitorAccessController {
     @PutMapping(value = "/")
     @Operation(description = "Request visitor exit from parking lots.")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void exit(VisitorExitData data) {
+    public void exit(@RequestBody VisitorExitData data) {
         log.info("Received visitor exit request: {}", data);
         visitorManager.exit(data.getVisitorId(), data.getLicensePlate(), data.getVoucherId());
     }
