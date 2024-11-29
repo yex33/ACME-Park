@@ -21,7 +21,7 @@ services:
   visitor-identification:
     container_name: visitor-identification
     build:
-      context: ../services/visitor-identification
+      context: ../services/visitor_identification
     ports:
       - "9091:9091"
     volumes:
