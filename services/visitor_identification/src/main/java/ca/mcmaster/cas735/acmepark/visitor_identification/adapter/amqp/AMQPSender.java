@@ -31,14 +31,25 @@ public class AMQPSender implements GateOpener, ExitLot, PaymentSender {
 
     @Override
     public void exitGateOpen(String gateId, String license) {
+        log.info("Preparing to send exit gate open request for gate ID: {} and license: {}", gateId, license);
+
         ExitGateRequest request = new ExitGateRequest();
         request.setGateId(gateId);
         request.setLicense(license);
-        streamBridge.send("exitGateOpen-out-0", request);
+
+        boolean isSent = streamBridge.send("exitGateOpen-out-0", request);
+
+        if (isSent) {
+            log.info("Exit gate open request successfully sent for gate ID: {} and license: {}", gateId, license);
+        } else {
+            log.error("Failed to send exit gate open request for gate ID: {} and license: {}", gateId, license);
+        }
     }
 
     @Override
     public void sendTransaction(ParkingFeeTransaction transaction) {
+        log.info("Preparing to send payment transaction: {}", transaction);
+
         PaymentRequest paymentRequest = PaymentRequest.builder()
                 .user(User.builder()
                         .userId(UUID.fromString(transaction.getInitiatedBy()))
@@ -50,6 +61,14 @@ public class AMQPSender implements GateOpener, ExitLot, PaymentSender {
                         .amount(transaction.getAmount())
                         .issuedOn(transaction.getTimestamp().toLocalDate()).build())).build();
 
-        streamBridge.send("sendTransaction-out-0", paymentRequest);
+        log.info("Payment request constructed: {}", paymentRequest);
+
+        boolean isSent = streamBridge.send("sendTransaction-out-0", paymentRequest);
+
+        if (isSent) {
+            log.info("Payment transaction successfully sent for transaction ID: {}", transaction.getTransactionId());
+        } else {
+            log.error("Failed to send payment transaction for transaction ID: {}", transaction.getTransactionId());
+        }
     }
 }

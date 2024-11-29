@@ -25,11 +25,21 @@ public class AMQPListener {
     @Bean
     public Consumer<PaymentEvent> handlePaymentStatusChanged() {
         return (paymentEvent) -> {
+            log.info("Received payment status change event: {}", paymentEvent);
+
             TransactionStatus status = paymentEvent.getStatus();
             if (status == TransactionStatus.SUCCESS) {
+                log.info("Payment status is SUCCESS. Processing parking fee transactions.");
+
                 paymentEvent.getTransactions().stream()
                         .filter(t -> t.getTransactionType().equals(TransactionType.PARKING_FEE))
-                        .forEach(t -> parkingFeeManager.handleParkingFeeStatusChanged(t.getTransactionId()));
+                        .forEach(t -> {
+                            log.info("Processing parking fee transaction with ID: {}", t.getTransactionId());
+                            parkingFeeManager.handleParkingFeeStatusChanged(t.getTransactionId());
+                            log.info("Parking fee transaction with ID: {} handled successfully.", t.getTransactionId());
+                        });
+            } else {
+                log.warn("Payment status is not SUCCESS. Event ignored: {}", paymentEvent);
             }
         };
     }
