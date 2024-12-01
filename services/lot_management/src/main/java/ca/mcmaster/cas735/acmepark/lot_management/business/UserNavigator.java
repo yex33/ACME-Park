@@ -20,16 +20,21 @@ public class UserNavigator implements IssueVehicleFineReceiver {
     @Override
     public void issueFine(IssueVehicleFine issueRequest) {
         String license = issueRequest.getLicensePlate();
-        String userId = entryDb
-                .findByLicensePlate(license)
-                .map(EntryRecord::getEntryRecordId)
-                .orElseThrow(() -> new RecordNotFoundException("Record Not Found"));
+        try {
+            String userId = entryDb.findByLicensePlate(license)
+                    .map(EntryRecord::getUserId)
+                    .orElseThrow(() -> new RecordNotFoundException("Record Not Found"));
+            log.info("Issuing fine to user: {}, license: {}", userId, license);
 
-        log.info("Send fine to the user with ID: {}", userId);
-        IssueUserFine issueUser = new IssueUserFine();
-        issueUser.setUserID(userId);
-        issueUser.setFine(issueRequest.getFine());
-        issueSender.sendFine(issueUser);
-        log.debug("Fine sent.");
+            IssueUserFine issueUser = new IssueUserFine();
+            issueUser.setUserID(userId);
+            issueUser.setFine(issueRequest.getFine());
+            issueSender.sendFine(issueUser);
+            log.info("Fine successfully sent to user: {}, license: {}", userId, license);
+        } catch (RecordNotFoundException e) {
+            log.warn("Failed to issue fine: {}", e.getMessage());
+        } catch (Exception e) {
+            log.error("Unexpected error while issuing fine for license: {}: {}", license, e.getMessage(), e);
+        }
     }
 }

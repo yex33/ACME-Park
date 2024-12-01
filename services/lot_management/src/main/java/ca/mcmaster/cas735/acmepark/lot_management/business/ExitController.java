@@ -21,17 +21,16 @@ public class ExitController implements ExitGateRequestReceiver {
 
     @Override
     public void allowExit(ExitGateRequest exitRequest) {
-        log.info("Process Exit Request");
+        log.info("Processing exit request for license: {}, gate: {}", exitRequest.getLicense(), exitRequest.getGateId());
         maintainer.updateExitRecord(exitRequest.getGateId(), exitRequest.getLicense());
 
         ControlGate exitSignal = new ControlGate();
         exitSignal.setControlSignal("Allow exit");
         exitSignal.setGateId(exitRequest.getGateId());
         controlGateSender.sendControlResult(exitSignal);
-        log.debug("Gate opened for vehicle: {}, gateId: {}", exitRequest.getLicense(), exitRequest.getGateId());
+        log.info("Gate opened for vehicle: {}, gate: {}", exitRequest.getLicense(), exitRequest.getGateId());
 
-        log.info("Send real-time occupancy to dashboard");
         updateSender.sendUpdate(analysis.generateAnalysis(exitRequest.getGateId()));
-        log.debug("Update sent");
+        log.info("Real-time occupancy update sent for gate: {}", exitRequest.getGateId());
     }
 }
