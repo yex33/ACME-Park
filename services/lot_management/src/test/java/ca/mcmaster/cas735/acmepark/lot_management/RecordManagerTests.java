@@ -14,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.argThat;
@@ -81,18 +82,31 @@ public class RecordManagerTests {
         ));
     }
 
-//    @Test
-//    void shouldUpdateExitRecordSuccessfully() {
-//        when(entryDb.findByLicensePlateAndGateIdAndExitRecord_ExitTimeIsNull(licensePlate, gateId))
-//                .thenReturn(Optional.of(entryRecord));
-//
-//        recordManager.updateExitRecord(gateId, licensePlate);
-//
-//        verify(exitDb, times(1)).save(argThat(record ->
-//                record.getLicensePlate().equals(licensePlate) &&
-//                        record.getUserId().equals(userId) &&
-//                        record.getGateId().equals(gateId) &&
-//                        record.getExitTime() != null
-//        ));
-//    }
+    @Test
+    void shouldUpdateExitRecordSuccessfully() {
+        entryRecord.setExitRecord(exitRecord);
+        when(entryDb.findByLicensePlateAndGateIdAndExitRecord_ExitTimeIsNull(licensePlate, gateId))
+                .thenReturn(Optional.of(entryRecord));
+        recordManager.updateExitRecord(gateId, licensePlate);
+
+        verify(exitDb, times(1)).save(argThat(record ->
+                record.getLicensePlate().equals(licensePlate) &&
+                        record.getUserId().equals(userId) &&
+                        record.getGateId().equals(gateId) &&
+                        record.getExitTime() != null
+        ));
+    }
+
+    @Test
+    void shouldThrowExceptionWhenEntryRecordNotFoundDuringUpdate() {
+        when(entryDb.findByLicensePlateAndGateIdAndExitRecord_ExitTimeIsNull(licensePlate, gateId))
+                .thenReturn(Optional.empty());
+
+        recordManager.updateExitRecord(gateId, licensePlate);
+        verify(exitDb, never()).save(any());
+        verify(entryDb, times(1))
+                .findByLicensePlateAndGateIdAndExitRecord_ExitTimeIsNull(licensePlate, gateId);
+    }
+
+
 }
