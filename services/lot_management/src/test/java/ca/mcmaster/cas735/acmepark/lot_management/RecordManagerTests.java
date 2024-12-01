@@ -107,6 +107,4 @@ public class RecordManagerTests {
         verify(entryDb, times(1))
                 .findByLicensePlateAndGateIdAndExitRecord_ExitTimeIsNull(licensePlate, gateId);
     }
-
-
 }
