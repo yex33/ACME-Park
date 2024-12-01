@@ -3,7 +3,7 @@ package ca.mcmaster.cas735.acmepark.lot_management.business;
 import ca.mcmaster.cas735.acmepark.lot_management.business.internal.GenerateAnalysis;
 import ca.mcmaster.cas735.acmepark.lot_management.business.internal.MaintainRecord;
 import ca.mcmaster.cas735.acmepark.lot_management.dtos.ControlGate;
-import ca.mcmaster.cas735.acmepark.common.dtos.ExitGateRequest;
+import ca.mcmaster.cas735.acmepark.lot_management.dtos.ExitGateRequest;
 import ca.mcmaster.cas735.acmepark.lot_management.port.provided.ExitGateRequestReceiver;
 import ca.mcmaster.cas735.acmepark.lot_management.port.required.ControlGateSender;
 import ca.mcmaster.cas735.acmepark.lot_management.port.required.LotUpdateSender;

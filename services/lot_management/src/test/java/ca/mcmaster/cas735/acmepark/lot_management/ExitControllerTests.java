@@ -8,7 +8,7 @@ import ca.mcmaster.cas735.acmepark.lot_management.business.internal.GenerateAnal
 import ca.mcmaster.cas735.acmepark.lot_management.business.internal.MaintainRecord;
 import ca.mcmaster.cas735.acmepark.lot_management.dtos.AnalysisResult;
 import ca.mcmaster.cas735.acmepark.lot_management.dtos.ControlGate;
-import ca.mcmaster.cas735.acmepark.common.dtos.ExitGateRequest;
+import ca.mcmaster.cas735.acmepark.lot_management.dtos.ExitGateRequest;
 import ca.mcmaster.cas735.acmepark.lot_management.port.required.ControlGateSender;
 import ca.mcmaster.cas735.acmepark.lot_management.port.required.LotUpdateSender;
 import org.junit.jupiter.api.BeforeAll;
