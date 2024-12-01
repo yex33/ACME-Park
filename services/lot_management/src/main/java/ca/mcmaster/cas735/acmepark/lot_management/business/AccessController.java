@@ -36,33 +36,30 @@ public class AccessController implements AccessGateRequestReceiver {
         String gateId = accessRequest.getGateId();
         ControlGate accessSignal =  new ControlGate();
 
-        log.info("Access control rule check");
+        log.info("Access control check: gateId={}, license={}, userId={}", gateId, license, userId);
         if (accessRule.getAllowedUsers(gateId).contains(userType)) {
             if (userType == UserType.VISITOR) {
-                log.debug("Send print QR code request");
+                log.info("Visitor access: QR code generated for license {}", license);
                 PrintQRcode qrCode = new PrintQRcode();
                 qrCode.setLicense(license);
                 qrCode.setQRcode(UUID.randomUUID().toString());
                 qrSender.sendQRcodePrint(qrCode);
-                log.debug("QR code sent");
             }
             accessSignal.setControlSignal("Access Approval");
-            log.debug("Access allowed");
+            log.info("Access granted: userId={}, gateId={}", userId, gateId);
 
             maintainer.insertRecord(license, userId, userType, gateId);
-            log.debug("Record inserted");
+            log.info("Access record inserted for license {}", license);
         }
         else {
             accessSignal.setControlSignal("Access Deny");
-            log.debug("Access deny");
+            log.info("Access denied: userId={}, gateId={}", userId, gateId);
         }
-        log.info("Send access result: {}", accessSignal);
         accessSignal.setGateId(gateId);
         controlGateSender.sendControlResult(accessSignal);
-        log.debug("Accessed result sent");
+        log.info("Access result sent: {}", accessSignal.getControlSignal());
 
-        log.info("Send real-time occupancy");
         updateSender.sendUpdate(analysis.generateAnalysis(accessRequest.getGateId()));
-        log.debug("Update sent to dashboard");
+        log.info("Real-time occupancy updated for gateId {}", gateId);
     }
 }

@@ -2,43 +2,25 @@ package ca.mcmaster.cas735.acmepark.lot_management.adapter.amqp.sender;
 
 import ca.mcmaster.cas735.acmepark.lot_management.dtos.IssueUserFine;
 import ca.mcmaster.cas735.acmepark.lot_management.port.required.IssueUserFineSender;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.TopicExchange;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
+import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.stereotype.Service;
 
 @Service @Slf4j
 public class FineSender implements IssueUserFineSender {
-    private final RabbitTemplate rabbitTemplate;
+    private final StreamBridge streamBridge;
 
-    @Value("${app.custom.messaging.outbound-exchange-topic-fine}") private String exchange;
-
-    @Autowired
-    public FineSender(RabbitTemplate rabbitTemplate) {
-        this.rabbitTemplate = rabbitTemplate;
+    public FineSender(StreamBridge streamBridge) {
+        this.streamBridge = streamBridge;
     }
 
     @Override
     public void sendFine(IssueUserFine fineRequest) {
-        log.debug("Sending message to {}: {}", exchange, fineRequest);
-        rabbitTemplate.convertAndSend(exchange, "*", translate(fineRequest));
-    }
-
-    private String translate(IssueUserFine fineRequest) {
-        ObjectMapper mapper= new ObjectMapper();
         try {
-            return mapper.writeValueAsString(fineRequest);
-        } catch (Exception e){
-            throw new RuntimeException(e);
+            streamBridge.send("fineSender-out-0", fineRequest);
+        } catch (Exception e) {
+            log.error("Failed to send message to controlGateSender-out-0", e);
+            throw new RuntimeException("Message sending failed", e);
         }
-    }
-
-    @Bean
-    public TopicExchange outboundFine() {
-        return new TopicExchange(exchange);
     }
 }

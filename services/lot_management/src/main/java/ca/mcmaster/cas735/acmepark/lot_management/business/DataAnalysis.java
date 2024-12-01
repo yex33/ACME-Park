@@ -18,13 +18,15 @@ public class DataAnalysis implements GenerateAnalysis {
 
     @Override
     public AnalysisResult generateAnalysis(String gateId) {
+        log.info("Starting occupancy analysis for gate: {}", gateId);
         List<ExitRecord> exitRecordsWithNullTime = exitDb.findByExitTimeIsNullAndGateId(gateId);
         List<EntryRecord> occupiedRecords =
                 exitRecordsWithNullTime
                         .stream()
                         .map(ExitRecord::getEntryRecord)
                         .toList();
-        log.debug("Analysis generated");
+
+        log.info("Analysis complete for gate: {}. Occupied count: {}", gateId, occupiedRecords.size());
         return AnalysisResult.builder().occupancy(occupiedRecords.size()).gateId(gateId).build();
     }
 }

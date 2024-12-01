@@ -37,3 +37,6 @@ deployment/data/
 services/lot_management/.mvn
 services/lot_management/mvnw
 services/lot_management/mvnw.cmd
+
+### Test Coverage Report ###
+services/lot_management/target/
