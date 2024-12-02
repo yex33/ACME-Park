@@ -17,11 +17,11 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class RuleManagerTests {
+    @Mock
+    ParkingRuleRepository repository;
+
     @InjectMocks
     RuleManager ruleManager;
-
-    @Mock
-    ParkingRuleRepository parkingRuleRepository;
 
     static String violation;
     static ParkingRule parkingRule;
@@ -37,13 +37,13 @@ class RuleManagerTests {
 
     @Test
     void givenViolation_whenGetFineForViolating_thenReturnFine() {
-        when(parkingRuleRepository.findByName(violation)).thenReturn(Optional.of(parkingRule));
+        when(repository.findByName(violation)).thenReturn(Optional.of(parkingRule));
         assertThat(ruleManager.getFineForViolating(violation)).isEqualTo(parkingRule.getFineAmount());
     }
 
     @Test
     void givenNonExistingViolation_whenGetFineForViolating_thenThrowRuntimeException() {
-        when(parkingRuleRepository.findByName(violation)).thenReturn(Optional.of(parkingRule));
+        when(repository.findByName(violation)).thenReturn(Optional.of(parkingRule));
         assertThatRuntimeException().isThrownBy(() -> ruleManager.getFineForViolating("non existing" + violation));
     }
 
