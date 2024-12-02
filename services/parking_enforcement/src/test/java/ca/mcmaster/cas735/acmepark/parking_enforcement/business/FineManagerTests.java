@@ -3,6 +3,7 @@ package ca.mcmaster.cas735.acmepark.parking_enforcement.business;
 import ca.mcmaster.cas735.acmepark.parking_enforcement.business.entities.FineTransaction;
 import ca.mcmaster.cas735.acmepark.parking_enforcement.business.entities.TransactionStatus;
 import ca.mcmaster.cas735.acmepark.parking_enforcement.dto.FineEvent;
+import ca.mcmaster.cas735.acmepark.parking_enforcement.ports.provided.RuleManagement;
 import ca.mcmaster.cas735.acmepark.parking_enforcement.ports.required.FineTransactionRepository;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -29,7 +30,7 @@ public class FineManagerTests {
     FineTransactionRepository repository;
 
     @Mock
-    RuleManager ruleManager;
+    RuleManagement ruleManager;
 
     @InjectMocks
     FineManager fineManager;

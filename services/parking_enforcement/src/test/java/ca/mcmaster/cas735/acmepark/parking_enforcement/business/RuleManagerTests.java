@@ -17,11 +17,11 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class RuleManagerTests {
-    @InjectMocks
-    RuleManager ruleManager;
-
     @Mock
     ParkingRuleRepository repository;
+
+    @InjectMocks
+    RuleManager ruleManager;
 
     static String violation;
     static ParkingRule parkingRule;

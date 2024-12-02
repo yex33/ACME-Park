@@ -13,11 +13,11 @@ import java.util.stream.Stream;
 
 @Service
 @Slf4j
-public class PaymentInitiator implements ChargeEventHandler {
+public class PaymentRequestModifier implements ChargeEventHandler {
     private final FineManagement fineManagement;
 
     @Autowired
-    public PaymentInitiator(FineManagement fineManagement) {
+    public PaymentRequestModifier(FineManagement fineManagement) {
         this.fineManagement = fineManagement;
     }
 
@@ -27,7 +27,7 @@ public class PaymentInitiator implements ChargeEventHandler {
                 .map(fineTransaction -> ChargeDto.builder()
                         .transactionId(fineTransaction.getId().toString())
                         .transactionType(TransactionType.VIOLATION_FINE)
-                        .description("Parking Violation")
+                        .description("")
                         .amount(fineTransaction.getAmount())
                         .issuedOn(fineTransaction.getIssuedOn().toLocalDate()).build());
         return PaymentRequest.builder()
