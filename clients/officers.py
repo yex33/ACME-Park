@@ -23,9 +23,7 @@ response = requests.post(
 
 # Validate the response
 if response.status_code == 202:
-    print("Test passed: Fine issued successfully!")
     print("Response body:", response.text)
 else:
-    print("Test failed.")
     print(f"HTTP Status Code: {response.status_code}")
     print("Response body:", response.text)
