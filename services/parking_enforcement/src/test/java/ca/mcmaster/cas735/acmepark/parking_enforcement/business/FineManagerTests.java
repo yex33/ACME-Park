@@ -38,6 +38,8 @@ public class FineManagerTests {
     static UUID userId;
     static String violation;
     static Integer amount;
+    static String description;
+    static LocalDateTime issuedOn;
     static FineEvent fineEvent;
 
     @BeforeAll
@@ -45,10 +47,13 @@ public class FineManagerTests {
         userId = UUID.randomUUID();
         violation = "some violation";
         amount = 100;
+        description = "some description";
+        issuedOn = LocalDateTime.now();
         fineEvent = FineEvent.builder()
-                .userId(userId)
-                .violation(violation)
-                .issuedOn(LocalDateTime.now()).build();
+                .userId(userId.toString())
+                .description(description)
+                .amount(amount)
+                .issuedOn(issuedOn).build();
     }
 
     @Test
@@ -63,6 +68,8 @@ public class FineManagerTests {
         assertThat(captor.getValue().getStatus()).isEqualTo(TransactionStatus.UNPAID);
         assertThat(captor.getValue().getIssuedOn()).isEqualTo(fineEvent.getIssuedOn());
         assertThat(captor.getValue().getAmount()).isEqualTo(amount);
+        assertThat(captor.getValue().getDescription()).isEqualTo(description);
+        assertThat(captor.getValue().getIssuedOn()).isEqualTo(issuedOn);
     }
 
     @Test
