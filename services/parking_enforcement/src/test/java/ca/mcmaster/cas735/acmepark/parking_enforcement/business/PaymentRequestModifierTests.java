@@ -29,7 +29,7 @@ public class PaymentRequestModifierTests {
     PaymentRequestModifier paymentRequestModifier;
 
     static UUID userId;
-    static String violation;
+    static String description;
     static Integer amount;
     static LocalDateTime issuedOn;
     static ChargeDto originalCharge;
@@ -38,7 +38,7 @@ public class PaymentRequestModifierTests {
     @BeforeAll
     static void setup() {
         userId = UUID.randomUUID();
-        violation = "some parking violation";
+        description = "some parking violation";
         amount = 100;
         issuedOn = LocalDateTime.now();
 
@@ -62,12 +62,13 @@ public class PaymentRequestModifierTests {
                 .userId(userId)
                 .status(TransactionStatus.PENDING)
                 .issuedOn(issuedOn)
+                .description(description)
                 .amount(amount).build();
         when(fineManager.registerPendingPaymentFrom(any())).thenReturn(List.of(fineTransaction));
         ChargeDto newCharge = ChargeDto.builder()
                 .transactionId(Long.toString(1L))
                 .transactionType(TransactionType.VIOLATION_FINE)
-                .description("")
+                .description(description)
                 .amount(amount)
                 .issuedOn(issuedOn.toLocalDate()).build();
 

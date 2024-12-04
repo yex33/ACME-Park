@@ -46,10 +46,10 @@ public class VisitorRegistry implements VisitorManagement {
         List<Visitor> invalidRecords = database.findVisitorsByLicensePlateAndExitedFalse(licensePlate);
         if (!invalidRecords.isEmpty()) {
             log.warn("Found {} invalid visitor records for license plate: {}. Deleting them.", invalidRecords.size(), licensePlate);
-            invalidRecords.forEach(r -> {
-                log.info("Deleting invalid visitor record with ID: {}", r.getVisitorId());
-                database.deleteVisitorByVisitorId(r.getVisitorId());
-            });
+            for (Visitor invalidRecord : invalidRecords) {
+                log.info("Deleting invalid visitor record with ID: {}", invalidRecord.getVisitorId());
+                database.delete(invalidRecord);
+            }
         }
 
         // Create a new visitor record
@@ -67,6 +67,7 @@ public class VisitorRegistry implements VisitorManagement {
         AccessGateRequest accessGateRequest = new AccessGateRequest();
         accessGateRequest.setUserId(visitor.getVisitorId());
         accessGateRequest.setGateId(gateId);
+        accessGateRequest.setLicense(licensePlate);
         accessGateRequest.setUserType(UserType.VISITOR);
 
         log.info("Sending gate access request for visitor ID: {} at gate: {}", visitor.getVisitorId(), gateId);

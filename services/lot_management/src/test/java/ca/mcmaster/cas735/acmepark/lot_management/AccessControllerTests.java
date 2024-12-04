@@ -3,6 +3,8 @@ package ca.mcmaster.cas735.acmepark.lot_management;
 import ca.mcmaster.cas735.acmepark.common.dtos.UserType;
 import ca.mcmaster.cas735.acmepark.lot_management.adapter.amqp.sender.QRCodeSender;
 import ca.mcmaster.cas735.acmepark.lot_management.business.AccessController;
+import ca.mcmaster.cas735.acmepark.lot_management.business.entities.AccessRule;
+import ca.mcmaster.cas735.acmepark.lot_management.business.internal.GenerateAnalysis;
 import ca.mcmaster.cas735.acmepark.lot_management.business.internal.MaintainRecord;
 import ca.mcmaster.cas735.acmepark.lot_management.dtos.AccessGateRequest;
 import ca.mcmaster.cas735.acmepark.lot_management.dtos.PrintQRcode;
@@ -24,6 +26,9 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class AccessControllerTests {
     @Mock
+    private AccessRule accessRule;
+
+    @Mock
     private QRCodeSender qrSender;
 
     @Mock
@@ -31,6 +36,9 @@ public class AccessControllerTests {
 
     @Mock
     private ControlGateSender controlGateSender;
+
+    @Mock
+    private GenerateAnalysis generateAnalysis;
 
     @Mock
     private LotUpdateSender updateSender;

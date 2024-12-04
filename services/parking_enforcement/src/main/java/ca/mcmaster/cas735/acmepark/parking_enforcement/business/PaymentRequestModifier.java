@@ -23,6 +23,7 @@ public class PaymentRequestModifier implements ChargeEventHandler {
 
     @Override
     public PaymentRequest attachFines(PaymentRequest paymentRequest) {
+        log.info("Attaching fines to payment request {}", paymentRequest);
         var fineCharges = fineManagement.registerPendingPaymentFrom(paymentRequest.getUser().getUserId()).stream()
                 .map(fineTransaction -> ChargeDto.builder()
                         .transactionId(fineTransaction.getId().toString())
@@ -30,8 +31,10 @@ public class PaymentRequestModifier implements ChargeEventHandler {
                         .description(fineTransaction.getDescription())
                         .amount(fineTransaction.getAmount())
                         .issuedOn(fineTransaction.getIssuedOn().toLocalDate()).build());
-        return PaymentRequest.builder()
+        var newRequest = PaymentRequest.builder()
                 .user(paymentRequest.getUser())
                 .charges(Stream.concat(paymentRequest.getCharges().stream(), fineCharges).toList()).build();
+        log.info("New payment request {}", newRequest);
+        return newRequest;
     }
 }
