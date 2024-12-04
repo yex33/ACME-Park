@@ -3,6 +3,8 @@ import click
 import requests
 from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn
+from rich.table import Table
+
 import pika
 import json
 
@@ -86,7 +88,7 @@ def new_permit():
 def listen_to_payment_message():
     exchange = "payment.method.selection.request"
     queue_name = "payment.method.selection.request.queue"
-    routing_key = "*"
+    routing_key = "#"
 
     def payment_message_callback(ch, method, properties, body):
         ch.stop_consuming()
@@ -94,10 +96,13 @@ def listen_to_payment_message():
 
         try:
             message = json.loads(body)
-            click.echo(f"{message}")
+            invoice = message.get("invoice", {})
+            user_type = invoice.get("user", {}).get("userType", "UNKNOWN")
 
+            click.echo("\n[Payment Message] Invoice received.")
+            handle_payment(user_type, message)
         except Exception as e:
-            click.echo(f"Error processing payment message: {e}")
+            click.echo(f"\nError processing payment message: {e}")
             
 
     credentials = pika.PlainCredentials('admin', 'cas735')
@@ -122,39 +127,122 @@ def listen_to_payment_message():
         channel.start_consuming()
 
 
-def handle_payment(user_type):
-    """Handle payment based on user type."""
+def handle_payment(user_type, message):
+    """Handle payment based on user type and invoice details."""
+    console = Console()
+
+    # Extract charges from the invoice
+    invoice = message.get("invoice", {})
+    charges = invoice.get("charges", [])
+    payment_methods = message.get("paymentMethods", [])
+    invoice_id = message.get("invoiceId")
+
+    # Display charges in a table
+    table = Table(title=f"Invoice #{invoice_id}", show_header=True, header_style="bold cyan")
+    table.add_column("Transaction ID", justify="center")
+    table.add_column("Transaction Type", justify="center")
+    table.add_column("Description", justify="center")
+    table.add_column("Amount", justify="center")
+    table.add_column("Issued On", justify="center")
+
+    for charge in charges:
+        table.add_row(
+            charge.get("transactionId", ""),
+            charge.get("transactionType", ""),
+            charge.get("description", ""),
+            f"${charge.get('amount', 0) / 100:.2f}",
+            "-".join(map(str, charge.get("issuedOn", []))),
+        )
+
+    console.print(table)
+
+    # Determine payment method based on user type
     if user_type.upper() == "STUDENT":
         click.echo("\n[Payment] STUDENT must pay now.")
-        process_payment()
+        process_payment(invoice_id, "UPFRONT_PAYMENT")
     elif user_type.upper() in ["STAFF", "FACULTY"]:
-        payment_method = inquirer.select(
+        click.echo("\n[Payment] You can choose a payment method.")
+        selected_payment_method = inquirer.select(
             message="Choose payment method:",
-            choices=["Pay Now", "Include in Payslip"],
-            default="Pay Now",
+            choices=payment_methods,
+            default=payment_methods[0],
         ).execute()
 
-        if payment_method == "Pay Now":
-            process_payment()
+        if selected_payment_method == "UPFRONT_PAYMENT":
+            click.echo("\n[Payment] You chose to pay now.")
+            process_payment(invoice_id, selected_payment_method)
+        elif selected_payment_method == "RESERVE_IN_PAYSLIP":
+            click.echo("\n[Payment] You chose to include this in your payslip.")
+            process_payment(invoice_id, selected_payment_method)
         else:
-            click.echo("\n[Payment] Payment will be included in the payslip.")
-            process_payment()
+            click.echo("\n[Payment] Unknown payment method selected.")
 
-def process_payment():
-    """Collect payment details and process the payment."""
-    click.echo("\n[Payment] Processing payment...")
-    payment_method = click.prompt(
-        "Select payment method",
-        type=click.Choice(["Credit Card", "Debit Card", "PayPal"], case_sensitive=False),
+
+def process_payment(invoice_id, payment_method):
+    exchange = "payment.method.selection"
+    routing_key = "#"
+    message = {
+        "invoiceId": invoice_id,
+        "paymentMethod": payment_method
+    }
+
+    credentials = pika.PlainCredentials("admin", "cas735")
+    parameters = pika.ConnectionParameters(host="localhost", credentials=credentials)
+    connection = pika.BlockingConnection(parameters)
+    channel = connection.channel()
+
+    # Publish the message
+    channel.basic_publish(
+        exchange=exchange,
+        routing_key=routing_key,
+        body=json.dumps(message),
+        properties=pika.BasicProperties(
+            content_type="application/json",
+            delivery_mode=2,
+        ),
     )
-    if payment_method in ["Credit Card", "Debit Card"]:
-        card_number = click.prompt("Enter card number")
-        expiration_date = click.prompt("Enter expiration date (MM/YY)")
-        cvv = click.prompt("Enter CVV")
-        click.echo("\n[Payment] Payment successful!")
-    elif payment_method == "PayPal":
-        paypal_email = click.prompt("Enter your PayPal email")
-        click.echo("\n[Payment] Payment successful via PayPal!")
+
+    connection.close()
+    click.echo("\n[Payment Processing Completed]")
+
+    listen_to_transponder_message()
+
+
+def listen_to_transponder_message():
+    exchange = "transponder.event"
+    queue_name = "transponder.event.queue"
+    routing_key = "#"
+
+    def payment_message_callback(ch, method, properties, body):
+        ch.stop_consuming()
+        WAITING_PROGRESS.stop()
+
+        transponder_id = body.decode("utf-8")
+
+        click.echo("\nTransponder issued successfully!")
+        click.echo(f"Transponder ID: {transponder_id}")
+
+    credentials = pika.PlainCredentials('admin', 'cas735')
+    parameters = pika.ConnectionParameters(host='localhost', credentials=credentials)
+    connection = pika.BlockingConnection(parameters)
+    channel = connection.channel()
+
+    channel.exchange_declare(exchange=exchange, exchange_type='topic', durable=True)
+    channel.queue_declare(queue=queue_name, durable=True)
+    channel.queue_bind(queue=queue_name, exchange=exchange, routing_key=routing_key)
+
+    channel.basic_consume(queue=queue_name, on_message_callback=payment_message_callback, auto_ack=True)
+
+    with Progress(
+        SpinnerColumn(),
+        TextColumn("[progress.description]{task.description}"),
+        transient=True,
+    ) as progress:
+        global WAITING_PROGRESS
+        WAITING_PROGRESS = progress
+        progress.add_task("Waiting for transponder message...", total=None)
+        channel.start_consuming()
+
 
 
 @cli.command("voucher")
