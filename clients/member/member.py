@@ -3,10 +3,13 @@ import click
 import requests
 from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn
-import time
+import pika
+import json
 
 MEMBER_BASE_URL = "http://localhost:9090/api/permits/"
 VISITOR_BASE_URL = "http://localhost:9091/api/vouchers/"
+
+WAITING_PROGRESS = None
 
 LOGO = r"""
  ░▒▓██████▓▒░ ░▒▓██████▓▒░░▒▓██████████████▓▒░░▒▓████████▓▒░ 
@@ -73,36 +76,51 @@ def new_permit():
             json=permit_data
         )
         if response.status_code == 201:
-            wait_for_payment_message(permit_type)
+            listen_to_payment_message()
         else:
             click.echo(f"\nFailed to create permit. Server responded with: {response.status_code}")
             click.echo(f"Response: {response.text}")
     except requests.RequestException as e:
         click.echo(f"\nError while communicating with the server: {e}")
 
-def wait_for_payment_message(user_type):
-    """Wait for a RabbitMQ message indicating payment information."""
-    click.echo("\n[Payment] Waiting for payment information...")
+def listen_to_payment_message():
+    exchange = "payment.method.selection.request"
+    queue_name = "payment.method.selection.request.queue"
+    routing_key = "*"
 
-    def simulate_rabbitmq_message():
-        # Placeholder for RabbitMQ message simulation
-        time.sleep(5)  # Simulate delay before message is received
-        return {"paymentRequired": True}
+    def payment_message_callback(ch, method, properties, body):
+        ch.stop_consuming()
+        WAITING_PROGRESS.stop()
 
-    # Display progress bar while waiting
+        try:
+            message = json.loads(body)
+            click.echo(f"{message}")
+
+        except Exception as e:
+            click.echo(f"Error processing payment message: {e}")
+            
+
+    credentials = pika.PlainCredentials('admin', 'cas735')
+    parameters = pika.ConnectionParameters(host='localhost', credentials=credentials)
+    connection = pika.BlockingConnection(parameters)
+    channel = connection.channel()
+
+    channel.exchange_declare(exchange=exchange, exchange_type='topic', durable=True)
+    channel.queue_declare(queue=queue_name, durable=True)
+    channel.queue_bind(queue=queue_name, exchange=exchange, routing_key=routing_key)
+
+    channel.basic_consume(queue=queue_name, on_message_callback=payment_message_callback, auto_ack=True)
+
     with Progress(
         SpinnerColumn(),
         TextColumn("[progress.description]{task.description}"),
         transient=True,
     ) as progress:
-        task = progress.add_task("Waiting for payment message...", total=None)
-        message = simulate_rabbitmq_message()
-        progress.stop()
+        global WAITING_PROGRESS
+        WAITING_PROGRESS = progress
+        progress.add_task("Waiting for payment message...", total=None)
+        channel.start_consuming()
 
-    click.echo("\n[Payment] Payment information received!")
-
-    if message.get("paymentRequired"):
-        handle_payment(user_type)
 
 def handle_payment(user_type):
     """Handle payment based on user type."""
