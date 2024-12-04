@@ -1,3 +1,5 @@
+import uuid
+
 from InquirerPy import inquirer
 import click
 import requests
@@ -42,7 +44,10 @@ def permit():
 def new_permit():
     """Create a new parking permit."""
     click.echo("\n[Permit New] Create a new parking permit.")
-    organization_id = click.prompt("Enter your organization ID (e.g. aa9acb9a-9060-4b0f-bc5b-40cb088350c2)")
+    organization_id = click.prompt(
+        "Enter your organization ID",
+        default=uuid.uuid4()
+    )
     license_plates = click.prompt(
         "Enter license plates (comma-separated) (e.g. CBS221)",
         value_proc=lambda x: [plate.strip() for plate in x.split(",")]
