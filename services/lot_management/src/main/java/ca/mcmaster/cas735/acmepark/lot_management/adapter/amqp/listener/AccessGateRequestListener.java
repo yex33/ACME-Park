@@ -1,6 +1,6 @@
 package ca.mcmaster.cas735.acmepark.lot_management.adapter.amqp.listener;
 
-import ca.mcmaster.cas735.acmepark.common.dtos.AccessGateRequest;
+import ca.mcmaster.cas735.acmepark.lot_management.dtos.AccessGateRequest;
 import ca.mcmaster.cas735.acmepark.lot_management.port.provided.AccessGateRequestReceiver;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;

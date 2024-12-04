@@ -1,10 +1,10 @@
 package ca.mcmaster.cas735.acmepark.lot_management.business;
 
-import ca.mcmaster.cas735.acmepark.common.dtos.AccessGateRequest;
 import ca.mcmaster.cas735.acmepark.common.dtos.UserType;
 import ca.mcmaster.cas735.acmepark.lot_management.business.entities.AccessRule;
 import ca.mcmaster.cas735.acmepark.lot_management.business.internal.GenerateAnalysis;
 import ca.mcmaster.cas735.acmepark.lot_management.business.internal.MaintainRecord;
+import ca.mcmaster.cas735.acmepark.lot_management.dtos.AccessGateRequest;
 import ca.mcmaster.cas735.acmepark.lot_management.dtos.ControlGate;
 import ca.mcmaster.cas735.acmepark.lot_management.dtos.PrintQRcode;
 import ca.mcmaster.cas735.acmepark.lot_management.port.provided.AccessGateRequestReceiver;
