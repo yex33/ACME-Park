@@ -183,12 +183,29 @@ def handle_payment(user_type, message):
             click.echo("\n[Payment] Unknown payment method selected.")
 
 
-def process_payment(invoice_id, payment_method):
+def process_payment(invoice_id, method):
+    click.echo("\n[Payment] Processing payment...")
+
+    payment_method = inquirer.select(
+        message="Select payment method:",
+        choices=["Credit Card", "Debit Card", "PayPal"],
+    ).execute()
+
+    if payment_method in ["Credit Card", "Debit Card"]:
+        card_number = click.prompt("Enter card number")
+        expiration_date = click.prompt("Enter expiration date (MM/YY)")
+        cvv = click.prompt("Enter CVV")
+        click.echo(f"\n[Payment] Payment successful using {payment_method}!")
+    elif payment_method == "PayPal":
+        paypal_email = click.prompt("Enter your PayPal email")
+        click.echo("\n[Payment] Payment successful via PayPal!")
+
+
     exchange = "payment.method.selection"
     routing_key = "#"
     message = {
         "invoiceId": invoice_id,
-        "paymentMethod": payment_method
+        "paymentMethod": method
     }
 
     credentials = pika.PlainCredentials("admin", "cas735")
@@ -208,7 +225,6 @@ def process_payment(invoice_id, payment_method):
     )
 
     connection.close()
-    click.echo("\n[Payment Processing Completed]")
 
     listen_to_transponder_message()
 
