@@ -28,4 +28,6 @@ public class FineTransaction {
     private LocalDateTime issuedOn;
 
     private Integer amount;
+
+    private String description;
 }

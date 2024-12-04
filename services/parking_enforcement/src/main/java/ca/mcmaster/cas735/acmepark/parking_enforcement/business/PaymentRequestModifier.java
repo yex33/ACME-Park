@@ -27,7 +27,7 @@ public class PaymentRequestModifier implements ChargeEventHandler {
                 .map(fineTransaction -> ChargeDto.builder()
                         .transactionId(fineTransaction.getId().toString())
                         .transactionType(TransactionType.VIOLATION_FINE)
-                        .description("")
+                        .description(fineTransaction.getDescription())
                         .amount(fineTransaction.getAmount())
                         .issuedOn(fineTransaction.getIssuedOn().toLocalDate()).build());
         return PaymentRequest.builder()

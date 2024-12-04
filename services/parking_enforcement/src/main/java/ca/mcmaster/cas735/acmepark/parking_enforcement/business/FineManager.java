@@ -4,7 +4,6 @@ import ca.mcmaster.cas735.acmepark.parking_enforcement.business.entities.FineTra
 import ca.mcmaster.cas735.acmepark.parking_enforcement.business.entities.TransactionStatus;
 import ca.mcmaster.cas735.acmepark.parking_enforcement.dto.FineEvent;
 import ca.mcmaster.cas735.acmepark.parking_enforcement.ports.provided.FineManagement;
-import ca.mcmaster.cas735.acmepark.parking_enforcement.ports.provided.RuleManagement;
 import ca.mcmaster.cas735.acmepark.parking_enforcement.ports.required.FineTransactionRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,22 +17,21 @@ import java.util.UUID;
 @Slf4j
 public class FineManager implements FineManagement {
     private final FineTransactionRepository repository;
-    private final RuleManagement ruleManagement;
 
     @Autowired
-    public FineManager(FineTransactionRepository repository, RuleManagement ruleManagement) {
+    public FineManager(FineTransactionRepository repository) {
         this.repository = repository;
-        this.ruleManagement = ruleManagement;
     }
 
     @Override
     @Transactional
     public void registerFine(FineEvent fineEvent) {
         repository.save(FineTransaction.builder()
-                .userId(fineEvent.getUserId())
+                .userId(UUID.fromString(fineEvent.getUserId()))
                 .status(TransactionStatus.UNPAID)
                 .issuedOn(fineEvent.getIssuedOn())
-                .amount(ruleManagement.getFineForViolating(fineEvent.getViolation())).build());
+                .description(fineEvent.getDescription())
+                .amount(fineEvent.getAmount()).build());
     }
 
     @Override
@@ -42,7 +40,6 @@ public class FineManager implements FineManagement {
         return repository.findByUserIdAndStatusIs(userId, TransactionStatus.UNPAID).stream()
                 .peek(fineTransaction -> fineTransaction.setStatus(TransactionStatus.PENDING))
                 .toList();
-
     }
 
     @Override
