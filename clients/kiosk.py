@@ -2,13 +2,17 @@ from InquirerPy import inquirer
 import click
 import requests
 from rich.progress import Progress, SpinnerColumn, TextColumn
+from rich.console import Console
+from rich.table import Table
 import pika
 import json
+from rabbitmq_utils import listen_to_queue
+from payment_utils import listen_to_payment_message
 
 GATE_ID = "Lot A"
 VISITOR_BASE_URL = "http://localhost:9091/api/visitors/"
 TRANSPONDER_BASE_URL = "http://localhost:9090/api/transponders/"
-MEMBER_EXIT_BASE_URL = "http://localhost:9093/gate/Lot_A/exit/"
+MEMBER_EXIT_BASE_URL = "http://localhost:9093/gate/Lot_A/exit"
 
 CURRENT_USER_TYPE = "" # VISITOR or MEMBER
 WAITING_PROGRESS = None
@@ -65,7 +69,7 @@ def enter():
                 json=payload,
             )
             if response.status_code == 200:
-                listen_to_gate_entry()
+                listen_to_gate_control_message()
 
             else:
                 click.echo(f"\nEntry denied. Server responded with: {response.status_code}")
@@ -93,7 +97,7 @@ def enter():
                 json=payload,
             )
             if response.status_code == 202:
-                listen_to_gate_entry()
+                listen_to_gate_control_message()
             else:
                 click.echo(f"\nEntry denied. Server responded with: {response.status_code}")
                 click.echo(f"Response: {response.text}")
@@ -132,8 +136,7 @@ def exit():
                 json=payload,
             )
             if response.status_code == 200:
-                # listen_to_gate_exit()
-                click.echo("Exit")
+                listen_to_gate_control_message(isExit=True)
             else:
                 click.echo(f"\nExit denied. Server responded with: {response.status_code}")
                 click.echo(f"Response: {response.text}")
@@ -143,14 +146,15 @@ def exit():
         # Visitor flow
         CURRENT_USER_TYPE = "VISITOR"
 
-        visitor_id = click.prompt("Enter your visiter ID")
+        visitor_id = click.prompt("Enter your visiter ID (QR Code)")
 
         license_plate = click.prompt("Enter your license plate")
 
-        has_voucher = click.confirm("Do you have a voucher ID?", default=True)
+        has_voucher = click.confirm("Do you have a voucher code?", default=True)
+        voucher_id = None
 
         if has_voucher:
-            voucher_id = click.prompt("Enter your voucher ID")
+            voucher_id = click.prompt("Enter your voucher code")
 
         # Visitor exit request payload
         payload = {
@@ -167,66 +171,50 @@ def exit():
                 headers={"accept": "*/*", "Content-Type": "application/json"},
                 json=payload,
             )
-            if response.status_code == 200:
-                # listen_to_gate_exit()
-                click.echo("Exit")
+            if response.status_code == 202:
+                listen_to_payment_message(on_payment_complete=listen_to_visitor_gate_exit)
+                
             else:
                 click.echo(f"\nExit denied. Server responded with: {response.status_code}")
                 click.echo(f"Response: {response.text}")
         except requests.RequestException as e:
             click.echo(f"\nError while communicating with the server: {e}")
 
+def listen_to_visitor_gate_exit():
+    listen_to_gate_control_message(isExit=True)
 
-def listen_to_gate_entry():
-    exchange = "control.gate"
-    queue_name = "control.gate.queue"
-    routing_key = "*"
+def listen_to_gate_control_message(isExit=False):
 
-    def gate_message_callback(ch, method, properties, body):
-        ch.stop_consuming()
-        WAITING_PROGRESS.stop()
-        
+    def gate_message_callback(body):
         try:
             message = json.loads(body)
             control_signal = message.get("controlSignal")
 
-            if control_signal == "Access Approval":
-
-                if CURRENT_USER_TYPE == "MEMBER":
-                    click.echo("\nEntry allowed! Welcome to the parking lot.")
+            if isExit:
+                if control_signal == "Allow exit":
+                    click.echo("\nExit allowed! Welcome to the parking lot again.")
                 else:
-                    user_id = message.get("userId")
-                    click.echo("\nEntry allowed! Welcome to the parking lot.")
-                    click.echo("\n[Visitor Entry] Please note:")
-                    click.echo(f"  - Your Visitor ID (QR Code): {user_id}")
-                    click.echo("  - Present this QR code at the kiosk when leaving the parking lot.")
-
+                    click.echo("Exit denied.")
             else:
-                click.echo("Access denied.")
+                if control_signal == "Access Approval":
+
+                    if CURRENT_USER_TYPE == "MEMBER":
+                        click.echo("\nEntry allowed! Welcome to the parking lot.")
+                    else:
+                        user_id = message.get("userId")
+                        click.echo("\nEntry allowed! Welcome to the parking lot.")
+                        click.echo("\n[Visitor Entry] Please note:")
+                        click.echo(f"  - Your Visitor ID (QR Code): {user_id}")
+                        click.echo("  - Present this QR code at the kiosk when leaving the parking lot.")
+
+                else:
+                    click.echo("Access denied.")
+            
 
         except Exception as e:
             click.echo(f"Error processing gate message: {e}")
 
-    credentials = pika.PlainCredentials('admin', 'cas735')
-    parameters = pika.ConnectionParameters(host='localhost', credentials=credentials)
-    connection = pika.BlockingConnection(parameters)
-    channel = connection.channel()
-
-    channel.exchange_declare(exchange=exchange, exchange_type='topic', durable=True)
-    channel.queue_declare(queue=queue_name, durable=True)
-    channel.queue_bind(queue=queue_name, exchange=exchange, routing_key=routing_key)
-
-    channel.basic_consume(queue=queue_name, on_message_callback=gate_message_callback, auto_ack=True)
-
-    with Progress(
-        SpinnerColumn(),
-        TextColumn("[progress.description]{task.description}"),
-        transient=True,
-    ) as progress:
-        global WAITING_PROGRESS
-        WAITING_PROGRESS = progress
-        progress.add_task("Waiting for gate control message...", total=None)
-        channel.start_consuming()
+    listen_to_queue(exchange="control.gate", queue_name="control.gate.queue", callback=gate_message_callback, task_description="Waiting for gate control message...")
 
 
 if __name__ == "__main__":
