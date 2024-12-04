@@ -55,6 +55,7 @@ public class PaymentManager implements PaymentRequestHandling {
                         .map(ChargeDto::getAmount)
                         .reduce(0, Integer::sum)).build();
         repository.save(invoice);
+        log.info("Received invoice: {}", invoice);
 
         return PaymentMethodSelectionRequest.builder()
                 .invoice(paymentRequest)
@@ -64,6 +65,7 @@ public class PaymentManager implements PaymentRequestHandling {
 
     @Override
     public PaymentEvent processPayment(PaymentMethodSelection paymentMethodSelection) {
+        log.info("Processing payment: {}", paymentMethodSelection);
         var invoice = repository.findById(paymentMethodSelection.getInvoiceId())
                 .orElseThrow();
         boolean success = switch (paymentMethodSelection.getPaymentMethod()) {
