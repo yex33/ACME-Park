@@ -178,7 +178,7 @@ def exit():
 
 
 def listen_to_gate_entry():
-    exchange = "control-gate"
+    exchange = "control.gate"
     queue_name = "control.gate.queue"
     routing_key = "*"
 
