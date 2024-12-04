@@ -216,7 +216,7 @@ def listen_to_gate_entry():
     channel.queue_declare(queue=queue_name, durable=True)
     channel.queue_bind(queue=queue_name, exchange=exchange, routing_key=routing_key)
 
-    channel.basic_consume(queue=queue_name, on_message_callback=gate_message_callback, auto_ack=False)
+    channel.basic_consume(queue=queue_name, on_message_callback=gate_message_callback, auto_ack=True)
 
     with Progress(
         SpinnerColumn(),

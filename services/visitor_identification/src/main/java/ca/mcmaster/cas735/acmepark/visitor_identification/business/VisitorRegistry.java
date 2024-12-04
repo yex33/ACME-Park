@@ -67,6 +67,7 @@ public class VisitorRegistry implements VisitorManagement {
         AccessGateRequest accessGateRequest = new AccessGateRequest();
         accessGateRequest.setUserId(visitor.getVisitorId());
         accessGateRequest.setGateId(gateId);
+        accessGateRequest.setLicense(licensePlate);
         accessGateRequest.setUserType(UserType.VISITOR);
 
         log.info("Sending gate access request for visitor ID: {} at gate: {}", visitor.getVisitorId(), gateId);
