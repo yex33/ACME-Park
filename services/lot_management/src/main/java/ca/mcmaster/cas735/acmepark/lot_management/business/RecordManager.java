@@ -47,13 +47,13 @@ public class RecordManager implements MaintainRecord {
         try {
             EntryRecord entryRecord = entryDb
                     .findByLicensePlateAndGateIdAndExitRecord_ExitTimeIsNull(license, gateId)
-                    .get();
+                    .orElseThrow();
             ExitRecord exitRecord = entryRecord.getExitRecord();
             exitRecord.setExitTime(LocalDateTime.now());
             exitDb.save(exitRecord);
             log.info("Exit record updated successfully for vehicle: {}, gate: {}", license, gateId);
         } catch (NoSuchElementException e) {
-            log.warn("Failed to issue fine: {}", e.getMessage());
+            log.warn("Record not found: {}", e.getMessage());
         } catch (Exception e) {
             log.error("An unexpected error occurred while updating exit record for vehicle: {}, gate: {}: {}", license, gateId, e.getMessage());
         }
