@@ -1,5 +1,6 @@
 package ca.mcmaster.cas735.acmepark.member_identification.adapter.rest;
 
+import ca.mcmaster.cas735.acmepark.member_identification.business.errors.NotFoundException;
 import ca.mcmaster.cas735.acmepark.member_identification.dto.TransponderAccessData;
 import ca.mcmaster.cas735.acmepark.member_identification.ports.provided.TransponderManagement;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,7 +26,7 @@ public class TransponderController {
     // PUT /api/transponders
     @PutMapping(value = "/")
     @Operation(description = "Member request entering via transponder.")
-    public void transponderAccess(@RequestBody TransponderAccessData request) {
+    public void transponderAccess(@RequestBody TransponderAccessData request) throws NotFoundException {
         log.info("Received transponder access request: {}", request);
         transponderManager.requestGateOpen(request);
     }

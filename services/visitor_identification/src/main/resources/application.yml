@@ -21,7 +21,7 @@ spring:
         sendTransaction-out-0:
           destination: charge.event
         requestGateOpen-out-0:
-          destination: access.receiver
+          destination: access
         exitGateOpen-out-0:
           destination: exit
         handlePaymentStatusChanged-in-0:

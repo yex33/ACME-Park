@@ -8,6 +8,7 @@ import ca.mcmaster.cas735.acmepark.member_identification.business.entities.Membe
 import ca.mcmaster.cas735.acmepark.member_identification.ports.provided.GateManagement;
 import ca.mcmaster.cas735.acmepark.member_identification.ports.provided.MonitorDataSender;
 import ca.mcmaster.cas735.acmepark.member_identification.ports.provided.PaymentSender;
+import ca.mcmaster.cas735.acmepark.member_identification.ports.provided.TransponderSender;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.function.StreamBridge;
@@ -18,7 +19,7 @@ import java.util.UUID;
 
 @Service
 @Slf4j
-public class AMQPSender implements PaymentSender, GateManagement, MonitorDataSender {
+public class AMQPSender implements PaymentSender, GateManagement, MonitorDataSender, TransponderSender {
     final StreamBridge streamBridge;
 
     @Autowired
@@ -76,5 +77,12 @@ public class AMQPSender implements PaymentSender, GateManagement, MonitorDataSen
         } else {
             log.error("Failed to send permit sale notification for permit ID: {}", permitId);
         }
+    }
+
+    @Override
+    public void sendTransponder(String transponderId) {
+        log.info("Sending transponder for transponder ID: {}", transponderId);
+
+        streamBridge.send("sendTransponder-out-0", transponderId);
     }
 }

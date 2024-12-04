@@ -2,6 +2,7 @@ package ca.mcmaster.cas735.acmepark.member_identification;
 
 import ca.mcmaster.cas735.acmepark.common.dtos.AccessGateRequest;
 import ca.mcmaster.cas735.acmepark.member_identification.business.entities.Permit;
+import ca.mcmaster.cas735.acmepark.member_identification.business.errors.NotFoundException;
 import ca.mcmaster.cas735.acmepark.member_identification.dto.TransponderAccessData;
 import ca.mcmaster.cas735.acmepark.member_identification.ports.provided.GateManagement;
 import ca.mcmaster.cas735.acmepark.member_identification.ports.required.PermitDataRepository;
@@ -35,7 +36,7 @@ class TransponderManagerTest {
     }
 
     @Test
-    void testRequestGateOpen_ValidPermit() {
+    void testRequestGateOpen_ValidPermit() throws NotFoundException {
         // Arrange
         String transponderId = UUID.randomUUID().toString();
         String gateId = "Lot M";
@@ -65,7 +66,7 @@ class TransponderManagerTest {
     }
 
     @Test
-    void testRequestGateOpen_ExpiredPermit() {
+    void testRequestGateOpen_ExpiredPermit() throws NotFoundException {
         // Arrange
         String transponderId = UUID.randomUUID().toString();
 
@@ -89,7 +90,7 @@ class TransponderManagerTest {
     }
 
     @Test
-    void testRequestGateOpen_NoPermitFound() {
+    void testRequestGateOpen_NoPermitFound() throws NotFoundException {
         // Arrange
         String transponderId = UUID.randomUUID().toString();
 

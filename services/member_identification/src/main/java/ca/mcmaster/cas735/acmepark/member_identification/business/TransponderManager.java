@@ -2,9 +2,12 @@ package ca.mcmaster.cas735.acmepark.member_identification.business;
 
 import ca.mcmaster.cas735.acmepark.common.dtos.AccessGateRequest;
 import ca.mcmaster.cas735.acmepark.member_identification.business.entities.Permit;
+import ca.mcmaster.cas735.acmepark.member_identification.business.errors.AlreadyExistingException;
+import ca.mcmaster.cas735.acmepark.member_identification.business.errors.NotFoundException;
 import ca.mcmaster.cas735.acmepark.member_identification.dto.TransponderAccessData;
 import ca.mcmaster.cas735.acmepark.member_identification.ports.provided.GateManagement;
 import ca.mcmaster.cas735.acmepark.member_identification.ports.provided.TransponderManagement;
+import ca.mcmaster.cas735.acmepark.member_identification.ports.provided.TransponderSender;
 import ca.mcmaster.cas735.acmepark.member_identification.ports.required.PermitDataRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,26 +22,28 @@ public class TransponderManager implements TransponderManagement {
 
     private final PermitDataRepository database;
     private final GateManagement gateManager;
+    private final TransponderSender transponderSender;
 
     @Autowired
-    public TransponderManager(PermitDataRepository database, GateManagement gateManager) {
+    public TransponderManager(PermitDataRepository database, GateManagement gateManager, TransponderSender transponderSender) {
         this.database = database;
         this.gateManager = gateManager;
+        this.transponderSender = transponderSender;
     }
 
     @Override
-    public void requestGateOpen(TransponderAccessData data) {
+    public void requestGateOpen(TransponderAccessData data) throws NotFoundException {
         log.info("Received request to open gate with transponder data: {}", data);
 
         Permit permit = database.findPermitByTransponderId(data.getTransponderId());
         if (permit == null) {
             log.warn("No permit found for transponder ID: {}", data.getTransponderId());
-            return;
+            throw new NotFoundException("Transponder", data.getTransponderId(), "transponderId");
         }
 
         if (permit.isExpired()) {
             log.warn("Permit with ID: {} has expired. Transponder access denied.", permit.getPermitId());
-            return;
+            throw new NotFoundException("Transponder", data.getTransponderId(), "transponderId");
         }
 
         log.info("Permit valid for transponder ID: {}. Proceeding with gate access.", data.getTransponderId());
@@ -74,5 +79,7 @@ public class TransponderManager implements TransponderManagement {
 
         database.saveAndFlush(permit);
         log.info("Permit with ID: {} updated and transponder issued successfully.", permitId);
+
+        this.transponderSender.sendTransponder(permit.getTransponderId());
     }
 }
