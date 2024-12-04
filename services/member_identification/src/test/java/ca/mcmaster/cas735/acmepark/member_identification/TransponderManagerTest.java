@@ -5,6 +5,7 @@ import ca.mcmaster.cas735.acmepark.member_identification.business.entities.Permi
 import ca.mcmaster.cas735.acmepark.member_identification.business.errors.NotFoundException;
 import ca.mcmaster.cas735.acmepark.member_identification.dto.TransponderAccessData;
 import ca.mcmaster.cas735.acmepark.member_identification.ports.provided.GateManagement;
+import ca.mcmaster.cas735.acmepark.member_identification.ports.provided.TransponderSender;
 import ca.mcmaster.cas735.acmepark.member_identification.ports.required.PermitDataRepository;
 import ca.mcmaster.cas735.acmepark.member_identification.business.TransponderManager;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,6 +27,9 @@ class TransponderManagerTest {
 
     @Mock
     private GateManagement gateManager;
+
+    @Mock
+    private TransponderSender transponderSender; // Mock for TransponderSender
 
     @InjectMocks
     private TransponderManager transponderManager;
@@ -66,7 +70,7 @@ class TransponderManagerTest {
     }
 
     @Test
-    void testRequestGateOpen_ExpiredPermit() throws NotFoundException {
+    void testRequestGateOpen_ExpiredPermit() {
         // Arrange
         String transponderId = UUID.randomUUID().toString();
 
@@ -81,16 +85,19 @@ class TransponderManagerTest {
         TransponderAccessData data = new TransponderAccessData();
         data.setTransponderId(transponderId);
 
-        // Act
-        transponderManager.requestGateOpen(data);
+        // Act & Assert
+        NotFoundException exception = assertThrows(NotFoundException.class, () -> {
+            transponderManager.requestGateOpen(data);
+        });
 
-        // Assert
+        // Verify no further interactions were made
         verify(database, times(1)).findPermitByTransponderId(transponderId);
-        verify(gateManager, never()).requestGateOpen(any());
+        verifyNoMoreInteractions(database);
+        verifyNoInteractions(gateManager); // Ensure no gate request was made
     }
 
     @Test
-    void testRequestGateOpen_NoPermitFound() throws NotFoundException {
+    void testRequestGateOpen_NoPermitFound() {
         // Arrange
         String transponderId = UUID.randomUUID().toString();
 
@@ -99,12 +106,14 @@ class TransponderManagerTest {
         TransponderAccessData data = new TransponderAccessData();
         data.setTransponderId(transponderId);
 
-        // Act
-        transponderManager.requestGateOpen(data);
+        // Act & Assert
+        NotFoundException exception = assertThrows(NotFoundException.class, () -> {
+            transponderManager.requestGateOpen(data);
+        });
 
-        // Assert
+        // Verify interactions
         verify(database, times(1)).findPermitByTransponderId(transponderId);
-        verify(gateManager, never()).requestGateOpen(any());
+        verify(gateManager, never()).requestGateOpen(any()); // Ensure no gate access request is sent
     }
 
     @Test

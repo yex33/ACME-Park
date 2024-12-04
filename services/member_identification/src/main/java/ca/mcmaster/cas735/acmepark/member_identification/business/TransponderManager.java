@@ -2,7 +2,6 @@ package ca.mcmaster.cas735.acmepark.member_identification.business;
 
 import ca.mcmaster.cas735.acmepark.common.dtos.AccessGateRequest;
 import ca.mcmaster.cas735.acmepark.member_identification.business.entities.Permit;
-import ca.mcmaster.cas735.acmepark.member_identification.business.errors.AlreadyExistingException;
 import ca.mcmaster.cas735.acmepark.member_identification.business.errors.NotFoundException;
 import ca.mcmaster.cas735.acmepark.member_identification.dto.TransponderAccessData;
 import ca.mcmaster.cas735.acmepark.member_identification.ports.provided.GateManagement;
@@ -80,6 +79,6 @@ public class TransponderManager implements TransponderManagement {
         database.saveAndFlush(permit);
         log.info("Permit with ID: {} updated and transponder issued successfully.", permitId);
 
-        this.transponderSender.sendTransponder(permit.getTransponderId());
+        transponderSender.sendTransponder(permit.getTransponderId());
     }
 }
