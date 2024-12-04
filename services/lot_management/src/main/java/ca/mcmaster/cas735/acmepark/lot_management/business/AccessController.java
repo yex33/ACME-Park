@@ -56,6 +56,7 @@ public class AccessController implements AccessGateRequestReceiver {
             log.info("Access denied: userId={}, gateId={}", userId, gateId);
         }
         accessSignal.setGateId(gateId);
+        accessSignal.setUserId(userId);
         controlGateSender.sendControlResult(accessSignal);
         log.info("Access result sent: {}", accessSignal.getControlSignal());
 
