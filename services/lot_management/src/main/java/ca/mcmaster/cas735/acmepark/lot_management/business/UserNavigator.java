@@ -19,23 +19,17 @@ public class UserNavigator implements IssueVehicleFineReceiver {
     private final IssueUserFineSender issueSender;
 
     @Override
-    public void issueFine(IssueVehicleFine issueRequest) {
-        String license = issueRequest.getLicensePlate();
-        try {
-            String userId = entryDb.findByLicensePlate(license)
-                    .map(EntryRecord::getUserId)
-                    .get();
-            log.info("Issuing fine to user: {}, license: {}", userId, license);
+    public void issueFine(String license, IssueVehicleFine issueRequest) throws NoSuchElementException {
+        String userId = entryDb.findByLicensePlate(license)
+            .map(EntryRecord::getUserId)
+            .orElseThrow();
+        log.info("Issuing fine to user: {}, license: {}", userId, license);
 
-            IssueUserFine issueUser = new IssueUserFine();
-            issueUser.setUserID(userId);
-            issueUser.setFine(issueRequest.getFine());
-            issueSender.sendFine(issueUser);
-            log.info("Fine successfully sent to user: {}, license: {}", userId, license);
-        } catch (NoSuchElementException e) {
-            log.warn("Failed to issue fine: {}", e.getMessage());
-        } catch (Exception e) {
-            log.error("Unexpected error while issuing fine for license: {}: {}", license, e.getMessage());
-        }
+        issueSender.sendFine(IssueUserFine.builder()
+                        .amount(issueRequest.getAmount())
+                        .userID(userId)
+                        .description(issueRequest.getDescription())
+                        .build());
+        log.info("Fine successfully sent to user: {}, license: {}", userId, license);
     }
 }

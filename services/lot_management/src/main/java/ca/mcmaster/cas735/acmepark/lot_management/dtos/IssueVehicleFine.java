@@ -1,14 +1,12 @@
 package ca.mcmaster.cas735.acmepark.lot_management.dtos;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import lombok.extern.jackson.Jacksonized;
 
-@Getter
-@Setter
-@Data @NoArgsConstructor
+@Value
+@Builder
+@Jacksonized
 public class IssueVehicleFine {
-    private String licensePlate;
-    private String fine;
+    String description;
+    Integer amount;
 }

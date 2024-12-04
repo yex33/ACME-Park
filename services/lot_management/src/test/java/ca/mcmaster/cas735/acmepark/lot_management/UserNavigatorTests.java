@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -47,9 +48,10 @@ class UserNavigatorTests {
                 .userType(UserType.STUDENT)
                 .userId(UUID.randomUUID().toString())
                 .licensePlate(licensePlate).build();
-        issueVehicleFine = new IssueVehicleFine();
-        issueVehicleFine.setLicensePlate(licensePlate);
-        issueVehicleFine.setFine("400");
+        issueVehicleFine = IssueVehicleFine.builder()
+                .amount(400)
+                .description("test")
+                .build();
     }
 
     @Test
@@ -57,28 +59,21 @@ class UserNavigatorTests {
         when(entryRecordDataRepository.findByLicensePlate(anyString()))
                 .thenReturn(Optional.of(entryRecord));
 
-        userNavigator.issueFine(issueVehicleFine);
+        userNavigator.issueFine(licensePlate, issueVehicleFine);
 
         ArgumentCaptor<IssueUserFine> captor = ArgumentCaptor.forClass(IssueUserFine.class);
         verify(issueUserFineSender, times(1)).sendFine(captor.capture());
 
         IssueUserFine capturedFine = captor.getValue();
-        assertEquals("400", capturedFine.getFine());
+        assertEquals(400, capturedFine.getAmount());
         assertEquals(entryRecord.getUserId(), capturedFine.getUserID());
+        assertEquals("test", captor.getValue().getDescription());
     }
 
     @Test
     void shouldNotIssueFineWhenNoRecordIsFound() {
         when(entryRecordDataRepository.findByLicensePlate(anyString())).thenReturn(Optional.empty());
-        userNavigator.issueFine(issueVehicleFine);
-        verify(issueUserFineSender, never()).sendFine(any());
-    }
-
-    @Test
-    void shouldHandleUnexpectedException() {
-        when(entryRecordDataRepository.findByLicensePlate(anyString()))
-                .thenThrow(new RuntimeException("Unexpected database error"));
-        assertDoesNotThrow(() -> userNavigator.issueFine(issueVehicleFine));
-        verify(issueUserFineSender, never()).sendFine(any());
+        assertThrows(NoSuchElementException.class,
+                () -> userNavigator.issueFine(licensePlate, issueVehicleFine));
     }
 }

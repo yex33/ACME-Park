@@ -1,9 +1,9 @@
 package ca.mcmaster.cas735.acmepark.lot_management.port.provided;
 
 import ca.mcmaster.cas735.acmepark.lot_management.dtos.IssueVehicleFine;
-import jakarta.ws.rs.NotFoundException;
+
+import java.util.NoSuchElementException;
 
 public interface IssueVehicleFineReceiver {
-    // it should not be find record, it should be handleIssue
-    void issueFine(IssueVehicleFine issueRequest) throws NotFoundException;
+    void issueFine(String license, IssueVehicleFine issueRequest) throws NoSuchElementException;
 }
