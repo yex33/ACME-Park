@@ -3,7 +3,6 @@ package ca.mcmaster.cas735.acmepark.parking_enforcement.business;
 import ca.mcmaster.cas735.acmepark.parking_enforcement.business.entities.FineTransaction;
 import ca.mcmaster.cas735.acmepark.parking_enforcement.business.entities.TransactionStatus;
 import ca.mcmaster.cas735.acmepark.parking_enforcement.dto.FineEvent;
-import ca.mcmaster.cas735.acmepark.parking_enforcement.ports.provided.RuleManagement;
 import ca.mcmaster.cas735.acmepark.parking_enforcement.ports.required.FineTransactionRepository;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -28,9 +27,6 @@ import static org.mockito.Mockito.when;
 public class FineManagerTests {
     @Mock
     FineTransactionRepository repository;
-
-    @Mock
-    RuleManagement ruleManager;
 
     @InjectMocks
     FineManager fineManager;
@@ -58,13 +54,12 @@ public class FineManagerTests {
 
     @Test
     void givenParkingRule_whenRegisterFine_thenSaveFineEvent() {
-        when(ruleManager.getFineForViolating(violation)).thenReturn(amount);
         ArgumentCaptor<FineTransaction> captor = ArgumentCaptor.forClass(FineTransaction.class);
 
         fineManager.registerFine(fineEvent);
 
         verify(repository).save(captor.capture());
-        assertThat(captor.getValue().getUserId()).isEqualTo(fineEvent.getUserId());
+        assertThat(captor.getValue().getUserId()).isEqualTo(UUID.fromString(fineEvent.getUserId()));
         assertThat(captor.getValue().getStatus()).isEqualTo(TransactionStatus.UNPAID);
         assertThat(captor.getValue().getIssuedOn()).isEqualTo(fineEvent.getIssuedOn());
         assertThat(captor.getValue().getAmount()).isEqualTo(amount);
