@@ -64,7 +64,7 @@ class VisitorRegistryTest {
         visitorRegistry.requestAccess(licensePlate, gateId);
 
         // Assert
-        verify(database, times(1)).deleteVisitorByVisitorId(invalidVisitor.getVisitorId());
+        verify(database, times(1)).delete(invalidVisitor);
         verify(database, times(1)).saveAndFlush(any(Visitor.class));
         verify(gateManager, times(1)).requestGateOpen(any(AccessGateRequest.class));
     }

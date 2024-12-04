@@ -7,6 +7,5 @@ import java.util.List;
 
 public interface VisitorDataRepository extends JpaRepository<Visitor, String> {
     List<Visitor> findVisitorsByLicensePlateAndExitedFalse(String licensePlate);
-    void deleteVisitorByVisitorId(String visitorId);
     Visitor findVisitorByVisitorId(String visitorId);
 }
