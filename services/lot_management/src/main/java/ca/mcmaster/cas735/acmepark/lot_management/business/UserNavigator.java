@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 
 @Service @Slf4j
@@ -31,6 +32,7 @@ public class UserNavigator implements IssueVehicleFineReceiver {
                         .amount(issueRequest.getAmount())
                         .userID(userId)
                         .description(issueRequest.getDescription())
+                        .issuedOn(LocalDateTime.now())
                         .build());
         log.info("Fine successfully sent to user: {}, license: {}", userId, license);
     }
