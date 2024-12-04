@@ -20,6 +20,7 @@ public class ControlGateResultSender implements ControlGateSender {
     public void sendControlResult(ControlGate controlResult) {
         try {
             streamBridge.send("controlGateSender-out-0", controlResult);
+            log.info("Gate control result: {}", controlResult);
         } catch (Exception e) {
             log.error("Failed to send message to controlGateSender-out-0", e);
             throw new RuntimeException("Message sending failed", e);
