@@ -37,7 +37,7 @@ services:
     build:
       context: ../services/lot_management
     ports:
-      - "9093:9093"
+      - "9093:9090"
     volumes:
       - ./data:/data
     depends_on:

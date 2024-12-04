@@ -20,9 +20,11 @@ public class UserNavigator implements IssueVehicleFineReceiver {
 
     @Override
     public void issueFine(String license, IssueVehicleFine issueRequest) throws NoSuchElementException {
-        String userId = entryDb.findByLicensePlate(license)
+    String userId =
+        entryDb
+            .findByLicensePlate(license)
             .map(EntryRecord::getUserId)
-            .orElseThrow();
+            .orElseThrow(() -> new NoSuchElementException("License plate not found"));
         log.info("Issuing fine to user: {}, license: {}", userId, license);
 
         issueSender.sendFine(IssueUserFine.builder()
