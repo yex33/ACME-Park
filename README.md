@@ -71,3 +71,16 @@ deployment $ docker compose down
 The system provides three client tools: kiosk, member, and officers. Each client interacts with specific services through REST APIs and RabbitMQ for event-driven communication. These clients are located in the `/clients` directory.
 
 For detailed instructions on how to use each client, refer to the README.md file inside `/clients`.
+
+### Parking Lot Access Rules
+
+Each parking lot has specific access rules based on user types. The current configuration is as follows:
+
+| Parking Lot | Allowed User Types                |
+|-------------|-----------------------------------|
+| Lot M       | STUDENT, STAFF                    |
+| Lot A       | FACULTY, VISITOR                  |
+| Lot B       | STUDENT, FACULTY                  |
+| Lot C       | VISITOR                           |
+
+The `kiosk.py` script inside `/clients` uses `Lot A` as the default parking lot example.
