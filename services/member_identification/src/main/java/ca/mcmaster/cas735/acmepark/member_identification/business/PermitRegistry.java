@@ -1,20 +1,17 @@
 package ca.mcmaster.cas735.acmepark.member_identification.business;
 
-import ca.mcmaster.cas735.acmepark.common.dtos.AccessGateRequest;
 import ca.mcmaster.cas735.acmepark.common.dtos.ParkingPermitInfo;
 import ca.mcmaster.cas735.acmepark.member_identification.business.entities.MemberFeeTransaction;
 import ca.mcmaster.cas735.acmepark.member_identification.business.entities.Permit;
 import ca.mcmaster.cas735.acmepark.member_identification.business.errors.AlreadyExistingException;
 import ca.mcmaster.cas735.acmepark.member_identification.dto.MemberFeeCreationData;
 import ca.mcmaster.cas735.acmepark.member_identification.dto.PermitCreationData;
-import ca.mcmaster.cas735.acmepark.member_identification.dto.TransponderAccessData;
 import ca.mcmaster.cas735.acmepark.member_identification.ports.provided.*;
 import ca.mcmaster.cas735.acmepark.member_identification.ports.required.PermitDataRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;

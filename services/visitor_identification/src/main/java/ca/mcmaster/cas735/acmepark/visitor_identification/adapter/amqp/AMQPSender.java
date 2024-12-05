@@ -2,6 +2,8 @@ package ca.mcmaster.cas735.acmepark.visitor_identification.adapter.amqp;
 
 import ca.mcmaster.cas735.acmepark.common.dtos.*;
 import ca.mcmaster.cas735.acmepark.visitor_identification.business.entities.ParkingFeeTransaction;
+import ca.mcmaster.cas735.acmepark.visitor_identification.dto.AccessGateRequest;
+import ca.mcmaster.cas735.acmepark.visitor_identification.dto.ExitGateRequest;
 import ca.mcmaster.cas735.acmepark.visitor_identification.ports.provided.ExitLot;
 import ca.mcmaster.cas735.acmepark.visitor_identification.ports.provided.GateOpener;
 import ca.mcmaster.cas735.acmepark.visitor_identification.ports.provided.PaymentSender;

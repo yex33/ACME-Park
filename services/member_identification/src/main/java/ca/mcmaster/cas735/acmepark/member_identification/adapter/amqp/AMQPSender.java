@@ -1,10 +1,10 @@
 package ca.mcmaster.cas735.acmepark.member_identification.adapter.amqp;
 
-import ca.mcmaster.cas735.acmepark.common.dtos.AccessGateRequest;
 import ca.mcmaster.cas735.acmepark.common.dtos.ChargeDto;
 import ca.mcmaster.cas735.acmepark.common.dtos.PaymentRequest;
 import ca.mcmaster.cas735.acmepark.common.dtos.User;
 import ca.mcmaster.cas735.acmepark.member_identification.business.entities.MemberFeeTransaction;
+import ca.mcmaster.cas735.acmepark.member_identification.dto.AccessGateRequest;
 import ca.mcmaster.cas735.acmepark.member_identification.ports.provided.GateManagement;
 import ca.mcmaster.cas735.acmepark.member_identification.ports.provided.MonitorDataSender;
 import ca.mcmaster.cas735.acmepark.member_identification.ports.provided.PaymentSender;

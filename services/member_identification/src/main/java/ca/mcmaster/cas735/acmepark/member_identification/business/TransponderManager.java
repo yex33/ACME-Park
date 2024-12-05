@@ -1,8 +1,8 @@
 package ca.mcmaster.cas735.acmepark.member_identification.business;
 
-import ca.mcmaster.cas735.acmepark.common.dtos.AccessGateRequest;
 import ca.mcmaster.cas735.acmepark.member_identification.business.entities.Permit;
 import ca.mcmaster.cas735.acmepark.member_identification.business.errors.NotFoundException;
+import ca.mcmaster.cas735.acmepark.member_identification.dto.AccessGateRequest;
 import ca.mcmaster.cas735.acmepark.member_identification.dto.TransponderAccessData;
 import ca.mcmaster.cas735.acmepark.member_identification.ports.provided.GateManagement;
 import ca.mcmaster.cas735.acmepark.member_identification.ports.provided.TransponderManagement;

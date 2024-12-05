@@ -1,6 +1,6 @@
 package ca.mcmaster.cas735.acmepark.visitor_identification;
 
-import ca.mcmaster.cas735.acmepark.common.dtos.AccessGateRequest;
+import ca.mcmaster.cas735.acmepark.visitor_identification.dto.AccessGateRequest;
 import ca.mcmaster.cas735.acmepark.visitor_identification.business.entities.Visitor;
 import ca.mcmaster.cas735.acmepark.visitor_identification.dto.ParkingFeeCreationData;
 import ca.mcmaster.cas735.acmepark.visitor_identification.ports.provided.GateOpener;
