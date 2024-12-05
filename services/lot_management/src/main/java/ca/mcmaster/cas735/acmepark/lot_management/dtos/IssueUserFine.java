@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Builder
 @Jacksonized
 public class IssueUserFine {
-    String userID;
+    String userId;
     Integer amount;
     String description;
     LocalDateTime issuedOn;

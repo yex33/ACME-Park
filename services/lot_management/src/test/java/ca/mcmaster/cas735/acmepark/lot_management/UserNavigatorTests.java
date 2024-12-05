@@ -66,7 +66,7 @@ class UserNavigatorTests {
 
         IssueUserFine capturedFine = captor.getValue();
         assertEquals(400, capturedFine.getAmount());
-        assertEquals(entryRecord.getUserId(), capturedFine.getUserID());
+        assertEquals(entryRecord.getUserId(), capturedFine.getUserId());
         assertEquals("test", captor.getValue().getDescription());
     }
 

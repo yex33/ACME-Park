@@ -30,7 +30,7 @@ public class UserNavigator implements IssueVehicleFineReceiver {
 
         issueSender.sendFine(IssueUserFine.builder()
                         .amount(issueRequest.getAmount())
-                        .userID(userId)
+                        .userId(userId)
                         .description(issueRequest.getDescription())
                         .issuedOn(LocalDateTime.now())
                         .build());
