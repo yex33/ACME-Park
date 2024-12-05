@@ -70,4 +70,4 @@ deployment $ docker compose down
 
 The system provides three client tools: kiosk, member, and officers. Each client interacts with specific services through REST APIs and RabbitMQ for event-driven communication. These clients are located in the `/clients` directory.
 
-For detailed instructions on how to use each client, refer to the README.md file inside /clients.
+For detailed instructions on how to use each client, refer to the README.md file inside `/clients`.
