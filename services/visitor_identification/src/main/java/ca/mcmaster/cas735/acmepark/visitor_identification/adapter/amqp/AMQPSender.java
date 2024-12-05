@@ -53,7 +53,7 @@ public class AMQPSender implements GateOpener, ExitLot, PaymentSender {
         log.info("Preparing to send payment transaction: {}", transaction);
 
         PaymentRequest paymentRequest = PaymentRequest.builder()
-                .user(User.builder()
+                .user(UserDto.builder()
                         .userId(UUID.fromString(transaction.getInitiatedBy()))
                         .userType(transaction.getUserType()).build())
                 .charges(List.of(ChargeDto.builder()

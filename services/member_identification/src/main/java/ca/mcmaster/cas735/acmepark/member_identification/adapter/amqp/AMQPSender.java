@@ -2,7 +2,7 @@ package ca.mcmaster.cas735.acmepark.member_identification.adapter.amqp;
 
 import ca.mcmaster.cas735.acmepark.common.dtos.ChargeDto;
 import ca.mcmaster.cas735.acmepark.common.dtos.PaymentRequest;
-import ca.mcmaster.cas735.acmepark.common.dtos.User;
+import ca.mcmaster.cas735.acmepark.common.dtos.UserDto;
 import ca.mcmaster.cas735.acmepark.member_identification.business.entities.MemberFeeTransaction;
 import ca.mcmaster.cas735.acmepark.member_identification.dto.AccessGateRequest;
 import ca.mcmaster.cas735.acmepark.member_identification.ports.provided.GateManagement;
@@ -32,7 +32,7 @@ public class AMQPSender implements PaymentSender, GateManagement, MonitorDataSen
         log.info("Preparing to send a payment transaction: {}", memberFeeTransaction);
 
         PaymentRequest paymentRequest = PaymentRequest.builder()
-                .user(User.builder()
+                .user(UserDto.builder()
                         .userId(UUID.fromString(memberFeeTransaction.getInitiatedBy()))
                         .userType(memberFeeTransaction.getUserType()).build())
                 .charges(List.of(ChargeDto.builder()

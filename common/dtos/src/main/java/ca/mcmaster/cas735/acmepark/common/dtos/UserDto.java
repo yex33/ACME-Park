@@ -9,7 +9,7 @@ import java.util.UUID;
 @Value
 @Builder
 @Jacksonized
-public class User {
+public class UserDto {
     UUID userId;
     UserType userType;
 }

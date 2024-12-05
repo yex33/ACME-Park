@@ -10,6 +10,6 @@ import java.util.List;
 @Builder
 @Jacksonized
 public class PaymentRequest {
-    User user;
+    UserDto user;
     List<ChargeDto> charges;
 }

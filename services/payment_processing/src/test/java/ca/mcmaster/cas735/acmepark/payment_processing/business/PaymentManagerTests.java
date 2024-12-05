@@ -33,14 +33,14 @@ class PaymentManagerTests {
     private PaymentManager paymentManager;
 
     static UUID userId;
-    static User student;
+    static UserDto student;
     static LocalDate issuedOn;
     static ChargeDto charge;
 
     @BeforeAll
     static void setUp() {
         userId = UUID.randomUUID();
-        student = User.builder()
+        student = UserDto.builder()
                 .userId(userId)
                 .userType(UserType.STUDENT).build();
         issuedOn = LocalDate.now();

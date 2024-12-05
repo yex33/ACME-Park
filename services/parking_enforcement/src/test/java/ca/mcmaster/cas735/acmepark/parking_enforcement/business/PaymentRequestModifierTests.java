@@ -49,7 +49,7 @@ public class PaymentRequestModifierTests {
                 .amount(500)
                 .issuedOn(LocalDate.now()).build();
         originalPaymentRequest = PaymentRequest.builder()
-                .user(User.builder()
+                .user(UserDto.builder()
                         .userId(userId)
                         .userType(UserType.STUDENT).build())
                 .charges(List.of(originalCharge)).build();
