@@ -58,7 +58,7 @@ python member.py permit new
 ```
 
 - Follow prompts to:
-    - Enter your organization ID.
+    - Enter your organization ID, which is the unique identifier of each student, staff and facluty member.
     - Provide license plates (comma-separated).
     - Select permit type (STUDENT, STAFF, or FACULTY).
 
