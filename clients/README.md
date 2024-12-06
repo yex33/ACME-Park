@@ -114,7 +114,7 @@ __Commands__:
 1. Issue a Fine:
 
 ```bash
-python officer.py issue
+python officers.py issue
 ```
 
 - Follow prompts to:
