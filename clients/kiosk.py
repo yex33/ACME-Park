@@ -39,6 +39,24 @@ def cli():
 @cli.command("enter")
 def enter():
     """Enter parking lot."""
+
+    rules = {
+        "Lot M": ["STUDENT", "STAFF"],
+        "Lot A": ["FACULTY", "VISITOR"],
+        "Lot B": ["STUDENT", "FACULTY"],
+        "Lot C": ["VISITOR"]
+    }
+
+    click.echo("\n[Access Rules for All Lots]")
+    for lot, access_list in rules.items():
+        click.echo(f"  {lot}: {', '.join(access_list)}")
+
+    click.echo(f"\n[Access Rules for Current Lot: {GATE_ID}]")
+    current_rules = rules.get(GATE_ID, [])
+    click.echo(f"The following user types are allowed to access {GATE_ID}:")
+    for rule in current_rules:
+        click.echo(f"  - {rule}")
+
     click.echo("\n[Enter Parking Lot]")
 
     # Step 1: Determine if user has a transponder

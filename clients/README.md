@@ -4,7 +4,7 @@ The ACME Parking System CLI provides two essential tools for managing parking op
 
 1. Member Management (`member.py`): Handles parking permits for members and issues visitor vouchers.
 2. Kiosk Management (`kiosk.py`): Facilitates parking lot entry and exit for both members and visitors.
-3.	Officer Management (officer.py): Enables parking officers to issue fines for violations.
+3. Officer Management (`officers.py`): Enables parking officers to issue fines for violations.
 
 ## Introduction
 
@@ -24,7 +24,7 @@ The ACME Parking System CLI tools are designed to streamline parking management:
 - Facilitate parking lot entry for members using transponders and visitors with license plates.
 - Validate parking lot exits using visitor IDs or transponders.
 
-### Officer (`officer.py`)
+### Officer (`officers.py`)
 - Issue fines for parking violations, specifying license plates, descriptions, and fine amounts.
 
 ## Installation
@@ -58,7 +58,7 @@ python member.py permit new
 ```
 
 - Follow prompts to:
-    - Enter your organization ID.
+    - Enter your organization ID, which is the unique identifier of each student, staff and facluty member.
     - Provide license plates (comma-separated).
     - Select permit type (STUDENT, STAFF, or FACULTY).
 
@@ -107,14 +107,14 @@ python kiosk.py exit
     - Provide Visitor ID (QR Code) and optional voucher code.
     - Payment is processed if needed.
 
-### Officer CLI (`officer.py`)
+### Officer CLI (`officers.py`)
 
 __Commands__:
 
 1. Issue a Fine:
 
 ```bash
-python officer.py issue
+python officers.py issue
 ```
 
 - Follow prompts to:
